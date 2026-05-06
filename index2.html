@@ -1,0 +1,535 @@
+
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>☁️ DOP-C02 練習問題</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .container { background: #fff; border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.35); max-width: 720px; width: 100%; padding: 36px 32px; position: relative; overflow: hidden; }
+    .container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, #f7971e, #ffd200, #21d4fd, #b721ff); }
+    .home-header { text-align: center; margin-bottom: 24px; }
+    .home-header .logo { font-size: 3rem; margin-bottom: 8px; }
+    .home-header h1 { font-size: 1.8rem; color: #2d3748; font-weight: 800; margin-bottom: 6px; }
+    .home-header p { color: #718096; font-size: 0.95rem; }
+    .level-switcher { display: flex; gap: 8px; margin-bottom: 16px; justify-content: center; }
+    .level-btn { flex: 1; padding: 10px 8px; border: 2.5px solid #e2e8f0; border-radius: 12px; background: #fff; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: inherit; color: #718096; }
+    .level-btn.active { border-color: #f7971e; background: linear-gradient(135deg, #fff9ed, #fffbea); color: #2d3748; box-shadow: 0 4px 12px rgba(247,151,30,0.2); }
+    .level-btn:hover:not(.active) { border-color: #cbd5e0; background: #f7fafc; }
+    .total-score-bar { background: linear-gradient(135deg, #0f2027, #2c5364); border-radius: 16px; padding: 16px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; color: #fff; }
+    .total-score-bar .label { font-size: 0.9rem; opacity: 0.85; }
+    .total-score-bar .value { font-size: 1.5rem; font-weight: 900; }
+    .total-score-bar .value span { font-size: 0.9rem; font-weight: 400; opacity: 0.8; }
+    .test-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; }
+    .test-card { border-radius: 16px; padding: 24px 18px; text-align: center; cursor: pointer; transition: all 0.25s cubic-bezier(.34,1.56,.64,1); border: none; color: #fff; }
+    .test-card:nth-child(1) { background: linear-gradient(135deg, #f7971e, #ffd200); color: #2d3748; }
+    .test-card:nth-child(2) { background: linear-gradient(135deg, #21d4fd, #b721ff); }
+    .test-card:nth-child(3) { background: linear-gradient(135deg, #0f2027, #2c5364); }
+    .test-card:nth-child(4) { background: linear-gradient(135deg, #f5576c, #f093fb); }
+    .test-card:nth-child(5) { background: linear-gradient(135deg, #43e97b, #38f9d7); color: #2d3748; }
+    .test-card:nth-child(6) { background: linear-gradient(135deg, #4facfe, #00f2fe); color: #2d3748; }
+    .test-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 16px 40px rgba(0,0,0,0.2); }
+    .test-card .card-emoji { font-size: 2.4rem; margin-bottom: 8px; display: block; }
+    .test-card h2 { font-size: 1.1rem; font-weight: 800; margin-bottom: 4px; }
+    .test-card .test-type { font-size: 0.75rem; opacity: 0.9; margin-bottom: 12px; background: rgba(255,255,255,0.25); border-radius: 99px; padding: 2px 10px; display: inline-block; }
+    .test-card .best-score { font-size: 0.85rem; opacity: 0.95; }
+    .test-card .best-score span { font-weight: 800; font-size: 1rem; }
+    .quiz-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .quiz-back { background: #f7fafc; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 1rem; color: #4a5568; transition: background 0.15s; }
+    .quiz-back:hover { background: #edf2f7; }
+    .quiz-title-wrap { flex: 1; }
+    .quiz-title-wrap h2 { font-size: 1.2rem; font-weight: 800; color: #2d3748; }
+    .quiz-title-wrap p { font-size: 0.8rem; color: #718096; }
+    .progress-wrap { margin-bottom: 20px; }
+    .progress-top { display: flex; justify-content: space-between; font-size: 0.82rem; color: #718096; margin-bottom: 6px; }
+    .progress-bar-bg { background: #edf2f7; border-radius: 99px; height: 10px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #f7971e, #ffd200); transition: width 0.5s cubic-bezier(.34,1.56,.64,1); }
+    .scenario { background: linear-gradient(135deg, #f7f8ff, #fffbea); border-left: 5px solid #f7971e; border-radius: 12px; padding: 18px 20px; font-size: 1.05rem; color: #2d3748; line-height: 1.7; margin-bottom: 20px; font-weight: 600; }
+    .choices { display: flex; flex-direction: column; gap: 10px; }
+    .choice-btn { border: 2.5px solid #e2e8f0; border-radius: 12px; padding: 14px 18px; cursor: pointer; text-align: left; background: #fff; transition: all 0.15s; width: 100%; font-size: 0.93rem; color: #2d3748; line-height: 1.5; font-family: inherit; }
+    .choice-btn:not([disabled]):hover { border-color: #f7971e; background: #fffbea; transform: translateX(4px); }
+    .choice-btn:focus { outline: none; }
+    .choice-btn.correct:focus, .choice-btn.reveal:focus { outline: 3px solid #38a169; outline-offset: 2px; }
+    @media (hover: none) {
+      .choice-btn { -webkit-tap-highlight-color: transparent; }
+      .choice-btn:not([disabled]):hover { border-color: #e2e8f0; background: #fff; transform: none; }
+      .choice-btn:focus { box-shadow: none; background: inherit; border-color: inherit; }
+      .choice-btn.correct:focus, .choice-btn.reveal:focus { outline: 3px solid #38a169 !important; outline-offset: 2px; box-shadow: none; }
+    }
+    .choice-btn.correct { border-color: #38a169; background: linear-gradient(135deg, #f0fff4, #c6f6d5); animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1); display: flex; justify-content: space-between; align-items: center; }
+    .choice-btn.correct .next-indicator { margin-left: 12px; flex-shrink: 0; }
+    .choice-btn.wrong { border-color: #e53e3e; background: linear-gradient(135deg, #fff5f5, #fed7d7); animation: shake 0.4s ease; }
+    .choice-btn.reveal { border-color: #38a169; background: linear-gradient(135deg, #f0fff4, #c6f6d5); display: flex; justify-content: space-between; align-items: center; }
+    @keyframes popIn { 0% { transform: scale(0.95); } 60% { transform: scale(1.03); } 100% { transform: scale(1); } }
+    @keyframes shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
+    .feedback { margin-top: 16px; padding: 14px 18px; border-radius: 12px; font-size: 1rem; font-weight: 800; animation: slideDown 0.3s ease; min-height: 80px; display: flex; align-items: center; visibility: hidden; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .feedback.correct { background: linear-gradient(135deg, #f0fff4, #c6f6d5); color: #276749; visibility: visible; }
+    .feedback.wrong { background: linear-gradient(135deg, #fff5f5, #fed7d7); color: #9b2c2c; visibility: visible; }
+    .explanation { margin-top: 10px; padding: 12px 16px; background: #f7f8ff; border-radius: 10px; font-size: 0.85rem; color: #4a5568; line-height: 1.6; font-weight: 400; border-left: 3px solid #667eea; min-height: 160px; visibility: hidden; }
+    .explanation.show { visibility: visible; animation: slideDown 0.3s ease; }
+    .next-btn { margin-top: 18px; width: 100%; padding: 15px; background: linear-gradient(135deg, #f7971e, #ffd200); color: #2d3748; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; display: none; transition: all 0.2s; font-family: inherit; letter-spacing: 0.03em; }
+    .next-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(247,151,30,0.4); }
+    .result-header { text-align: center; margin-bottom: 24px; }
+    .result-header h1 { font-size: 1.6rem; font-weight: 800; color: #2d3748; }
+    .score-ring { width: 160px; height: 160px; border-radius: 50%; background: linear-gradient(135deg, #f7971e, #ffd200); display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 12px 40px rgba(247,151,30,0.4); animation: popIn 0.5s cubic-bezier(.34,1.56,.64,1); }
+    .score-num { font-size: 2.8rem; font-weight: 900; color: #2d3748; line-height: 1; }
+    .score-unit { font-size: 0.9rem; color: rgba(45,55,72,0.75); }
+    .score-area { text-align: center; margin: 28px 0; }
+    .score-stars { font-size: 1.6rem; letter-spacing: 4px; margin-bottom: 8px; }
+    .score-msg { font-size: 1.15rem; font-weight: 700; color: #2d3748; margin-bottom: 6px; }
+    .best-msg { font-size: 0.9rem; color: #d69e2e; font-weight: 700; }
+    .result-list { border-top: 2px solid #edf2f7; margin-top: 24px; padding-top: 20px; }
+    .result-list h3 { font-size: 0.95rem; color: #718096; margin-bottom: 14px; font-weight: 700; }
+    .answer-row { display: flex; align-items: flex-start; gap: 10px; padding: 12px 0; border-bottom: 1px solid #f7fafc; font-size: 0.84rem; }
+    .q-num { min-width: 32px; font-weight: 800; color: #a0aec0; }
+    .mark { font-size: 1.2rem; min-width: 24px; }
+    .answer-detail { color: #2d3748; line-height: 1.7; flex: 1; }
+    .answer-detail .exp { margin-top: 4px; font-size: 0.8rem; color: #718096; border-left: 2px solid #e2e8f0; padding-left: 8px; }
+    .btn-home { margin-top: 24px; width: 100%; padding: 15px; background: linear-gradient(135deg, #f7971e, #ffd200); color: #2d3748; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .btn-home:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(247,151,30,0.4); }
+    .confetti-wrap { position: fixed; top: 0; left: 0; right: 0; pointer-events: none; overflow: hidden; height: 100vh; z-index: 9999; }
+    .confetti-piece { position: absolute; width: 10px; height: 10px; border-radius: 2px; animation: confettiFall linear forwards; }
+    @keyframes confettiFall { 0% { transform: translateY(-20px) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+    .home-top { position: relative; }
+    .btn-reset-corner { position: absolute; top: 0; right: 0; background: transparent; color: #e53e3e; border: 2px solid #e53e3e; border-radius: 10px; padding: 6px 12px; font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: inherit; white-space: nowrap; }
+    .btn-reset-corner:hover { background: #fff5f5; transform: translateY(-1px); }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div id="screen-home">
+    <div class="home-top">
+      <button class="btn-reset-corner" onclick="resetScores()">🗑️ リセット</button>
+      <div class="home-header">
+        <h1>DOP-C02 練習問題</h1>
+        <p>AWS DevOps Engineer Professional ／ 各10問・100点満点</p>
+      </div>
+    </div>
+    <div class="level-switcher">
+      <button class="level-btn active" id="level-btn-1" onclick="switchLevel(1)">🟢 基礎初級</button>
+      <button class="level-btn" id="level-btn-2" onclick="switchLevel(2)">🟡 基礎中級</button>
+      <button class="level-btn" id="level-btn-3" onclick="switchLevel(3)">🔴 基礎上級</button>
+    </div>
+    <div class="total-score-bar">
+      <div class="label">🎯 総合成績</div>
+      <div class="value" id="total-score-display">-</div>
+    </div>
+    <div class="test-grid" id="test-grid"></div>
+  </div>
+
+  <div id="screen-quiz" class="hidden">
+    <div class="quiz-header">
+      <button class="quiz-back" onclick="showHome()">← 戻る</button>
+      <div class="quiz-title-wrap">
+        <h2 id="quiz-title"></h2>
+        <p id="quiz-subtitle"></p>
+      </div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-top">
+        <span id="progress-label"></span>
+        <span id="progress-pct"></span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+    </div>
+    <div class="scenario" id="scenario"></div>
+    <div class="choices" id="choices"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="explanation" id="explanation"></div>
+    <button class="next-btn" id="next-btn"></button>
+  </div>
+
+  <div id="screen-results" class="hidden">
+    <div class="result-header"><h1 id="result-title"></h1></div>
+    <div class="score-area">
+      <div class="score-ring">
+        <span class="score-num" id="score-num"></span>
+        <span class="score-unit">点 / 100点</span>
+      </div>
+      <div class="score-stars" id="score-stars"></div>
+      <p class="score-msg" id="score-msg"></p>
+      <p class="best-msg" id="best-msg"></p>
+    </div>
+    <div class="result-list">
+      <h3>📋 解答一覧</h3>
+      <div id="answer-list"></div>
+    </div>
+    <button class="btn-home" onclick="showHome()">🏠 テスト選択に戻る</button>
+  </div>
+</div>
+<div class="confetti-wrap" id="confetti-wrap"></div>
+
+<script>
+const AC = window.AudioContext || window.webkitAudioContext;
+let ac = null;
+function getAC() { if (!ac) ac = new AC(); if (ac.state === 'suspended') ac.resume(); return ac; }
+function tone(freq, type, start, dur, vol = 0.25) {
+  try {
+    const a = getAC(), osc = a.createOscillator(), gain = a.createGain();
+    osc.connect(gain); gain.connect(a.destination);
+    osc.type = type; osc.frequency.value = freq;
+    gain.gain.setValueAtTime(vol, a.currentTime + start);
+    gain.gain.exponentialRampToValueAtTime(0.001, a.currentTime + start + dur);
+    osc.start(a.currentTime + start); osc.stop(a.currentTime + start + dur);
+  } catch(e) {}
+}
+function soundCorrect() { tone(660,'sine',0,0.12,0.25); tone(880,'sine',0.08,0.15,0.25); tone(1100,'sine',0.18,0.18,0.20); }
+function soundWrong()   { tone(330,'sawtooth',0,0.10,0.20); tone(220,'sawtooth',0.08,0.18,0.15); }
+function soundClick()   { tone(1000,'sine',0,0.05,0.10); }
+function soundFanfare() { [[523,0],[659,0.15],[784,0.30],[1047,0.45],[1047,0.60],[784,0.70],[1047,0.82]].forEach(([f,t]) => tone(f,'sine',t,0.18,0.28)); }
+function soundGood()    { tone(784,'sine',0,0.15,0.25); tone(1047,'sine',0.14,0.20,0.25); }
+
+function launchConfetti(count = 60) {
+  const wrap = document.getElementById('confetti-wrap');
+  wrap.innerHTML = '';
+  const colors = ['#f7971e','#ffd200','#21d4fd','#b721ff','#0f2027','#38a169','#f5576c'];
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+    el.style.animationDelay = (Math.random() * 0.8) + 's';
+    el.style.width = el.style.height = (6 + Math.random() * 8) + 'px';
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    wrap.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+}
+
+// Test 1: SDLC Automation
+const TEST1 = {
+  id: 1, title: '📦 テスト１', type: 'SDLC Automation',
+  emoji: '📦', subtitle: 'CI/CD・デプロイメント自動化の問題！',
+  questions: [
+    { scenario: '🔧 AWS CodePipeline でソースコード管理に使うサービスは？', choices: ['AWS CodeCommit', 'AWS CodeBuild', 'AWS CodeDeploy', 'AWS CloudFormation'], correct: 0, explanation: 'CodeBuild はビルド、CodeDeploy はデプロイ、CloudFormation はインフラ管理。' },
+    { scenario: '🏗️ AWS CodeBuild の主な役割は何？', choices: ['ソースコードのビルドとテストを自動化する', 'コードをサーバーにデプロイする', 'バージョン管理を行う', 'インフラをコードで定義する'], correct: 0, explanation: null },
+    { scenario: '🟦🟩 ブルー/グリーンデプロイとは？', choices: ['本番環境と同等の環境を切り替える手法', '既存インスタンスを段階的に更新する手法', '全サーバーを同時に更新する手法', '一部ユーザーに新バージョンをテストする手法'], correct: 0, explanation: '段階的=ローリング、同時=All-at-once、一部ユーザー=カナリアデプロイ。' },
+    { scenario: '🐦 カナリアデプロイの特徴は？', choices: ['少数のユーザーで検証し段階的に展開する', '全ユーザーに一度にデプロイする', '環境を完全に切り替える', '定時に自動的にデプロイする'], correct: 0, explanation: null },
+    { scenario: '📄 CodeDeploy でEC2へのデプロイを定義するファイルは？', choices: ['appspec.yml', 'buildspec.yml', 'template.yaml', 'taskdef.json'], correct: 0, explanation: 'buildspec.yml は CodeBuild、template.yaml は CloudFormation、taskdef.json は ECS タスク定義用。' },
+    { scenario: '📄 CodeBuild でビルド手順を定義するファイルは？', choices: ['buildspec.yml', 'appspec.yml', 'Dockerfile', 'deploy.yaml'], correct: 0, explanation: null },
+    { scenario: '🗄️ CodePipeline のステージ間でアーティファクトを保存するサービスは？', choices: ['Amazon S3', 'Amazon EFS', 'Amazon DynamoDB', 'AWS CodeArtifact'], correct: 0, explanation: 'CodeArtifact はパッケージリポジトリ。アーティファクトは S3 に保存。' },
+    { scenario: '🔄 ローリングデプロイの説明として正しいのは？', choices: ['既存インスタンスを少しずつ新バージョンに更新する', '全インスタンスを同時に更新する', '環境を完全に切り替える', '定期的に自動デプロイする'], correct: 0, explanation: null },
+    { scenario: '✋ CodePipeline の手動承認アクションの目的は？', choices: ['担当者の確認で次ステージに進めるかを判断する', 'コードを自動デプロイする', 'テスト結果を記録する', 'エラーを自動修正する'], correct: 0, explanation: null },
+    { scenario: '🌿 GitOps の基本的な考え方は？', choices: ['Gitリポジトリを唯一の信頼できる情報源として管理する', 'コードを手動でサーバーにコピーする', 'コンソールでインフラを構築する', 'デプロイサーバーを使わずに実行する'], correct: 0, explanation: null },
+  ],
+};
+
+// Test 2: Configuration Management and IaC
+const TEST2 = {
+  id: 2, title: '🏗️ テスト２', type: 'IaC & 構成管理',
+  emoji: '🏗️', subtitle: 'Infrastructure as Code の問題！',
+  questions: [
+    { scenario: '📦 AWS CloudFormation の主な目的は？', choices: ['AWSリソースをコードで定義・自動プロビジョニングする', 'アプリをビルドする', 'ログを分析する', 'コストを削減する'], correct: 0, explanation: null },
+    { scenario: '💻 AWS CDK の特徴は？', choices: ['プログラミング言語でAWSリソースを定義できる', 'GUIでインフラを構築する', 'テンプレートを自動削除する', 'コスト分析を行う'], correct: 0, explanation: 'CDK は内部的に CloudFormation テンプレートを生成。' },
+    { scenario: '🔐 Parameter Store の用途は？', choices: ['設定値やシークレットを安全に保存・管理する', 'EC2 のパフォーマンスを監視する', 'テンプレートを保存する', 'S3 のアクセスを制限する'], correct: 0, explanation: '自動ローテーションが必要なら Secrets Manager も選択肢。' },
+    { scenario: '⚙️ AWS OpsWorks の説明として正しいのは？', choices: ['Chef や Puppet を使ったサーバー構成管理サービス', 'コンテナオーケストレーション', 'CI/CDパイプライン', 'コスト管理'], correct: 0, explanation: null },
+    { scenario: '🔗 CloudFormation でスタック間で値を共有するには？', choices: ['Outputs と Fn::ImportValue', 'Mappings', 'Conditions', 'Metadata'], correct: 0, explanation: 'Mappings はリージョン別テーブル、Conditions は条件付き作成、Metadata はメタ情報。' },
+    { scenario: '📋 AWS Config の主な目的は？', choices: ['AWSリソースの設定変更を継続的に記録・評価する', 'インフラをコード化する', 'アプリをデプロイする', 'コストをトラッキングする'], correct: 0, explanation: 'Config Rules でコンプライアンス違反を自動検出。' },
+    { scenario: '🌐 Terraform の説明として正しいのは？', choices: ['マルチクラウド対応の IaC ツール', 'AWSのデプロイサービス', 'コンテナ管理ツール', 'バージョン管理ツール'], correct: 0, explanation: null },
+    { scenario: '🔍 CloudFormation のドリフト検出とは？', choices: ['実際の設定がテンプレートと差異がないか確認する', '誤削除を防ぐ', 'コストを予測する', '構文エラーを検出する'], correct: 0, explanation: 'コンソール操作で手動変更されたリソースを検出。' },
+    { scenario: '🛒 Service Catalog の目的は？', choices: ['承認済みのAWS構成を組織内にカタログで提供する', 'サービス一覧を表示する', 'コスト削減提案', 'セキュリティ脆弱性を検出する'], correct: 0, explanation: null },
+    { scenario: '📁 Elastic Beanstalk の .ebextensions の用途は？', choices: ['環境のカスタム設定をYAMLで定義する', 'アプリのソースコードを格納する', 'デプロイログを保存する', 'S3 のポリシーを設定する'], correct: 0, explanation: null },
+  ],
+};
+
+// Test 3: Resilient Cloud Solutions
+const TEST3 = {
+  id: 3, title: '⚡ テスト３', type: 'Resilient Cloud Solutions',
+  emoji: '⚡', subtitle: '高可用性・耐障害性の問題！',
+  questions: [
+    { scenario: '🎯 RTO（Recovery Time Objective）とは？', choices: ['障害から復旧までの許容時間', '許容できるデータ損失量', '年間稼働率の目標', 'バックアップ頻度'], correct: 0, explanation: 'RPO はデータ損失量。RTO と RPO はディザスタリカバリの基本。' },
+    { scenario: '🌍 マルチAZ構成の主な目的は？', choices: ['1つのAZ で障害が起きても別AZ で継続稼働できる', '複数リージョンでデータ同期', 'ユーザーに近い場所にサーバーを配置', 'コストを削減する'], correct: 0, explanation: 'マルチリージョンはさらに広域災害対策。マルチAZ は同一リージョン内。' },
+    { scenario: '🔄 Route 53 のフェイルオーバールーティングは？', choices: ['プライマリ障害時に自動でセカンダリに切り替える', 'リクエスト数で分散', '地理的に近い場所にルーティング', 'ランダムに選択'], correct: 0, explanation: null },
+    { scenario: '📊 RDS マルチAZ の特徴は？', choices: ['スタンバイに自動フェイルオーバー、エンドポイントが変わらない', '読み取りスループット向上', '手動フェイルオーバーが必要', '別リージョンにスタンバイ'], correct: 0, explanation: '読み取りスケールは Read Replica を使う。フェイルオーバーは数分以内。' },
+    { scenario: '🚀 ターゲット追跡スケーリングとは？', choices: ['メトリクスを目標値に保つよう自動スケール', 'スケジュール実行', '手動でインスタンス数変更', 'スケールイン・アウトを交互に繰り返す'], correct: 0, explanation: 'ステップスケーリングはメトリクスの変化量で決定。' },
+    { scenario: '🌐 CloudFront オリジンフェイルオーバーの動作は？', choices: ['プライマリ障害時に自動でセカンダリにフォールバック', 'ユーザー地域で選択', 'CPU使用率で分散', 'キャッシュミス時にフォールバック'], correct: 0, explanation: null },
+    { scenario: '💾 S3 のデータ耐久性は？', choices: ['99.999999999%（イレブンナイン）', '99.9%', '99.99%', '100%'], correct: 0, explanation: 'S3 は複数AZ に自動複製。耐久性と可用性は別の概念。' },
+    { scenario: '🔁 ELB のヘルスチェックの役割は？', choices: ['正常でないターゲットへのトラフィック送信を停止', 'CPU使用率を監視', 'ログを収集', '自動パッチを適用'], correct: 0, explanation: null },
+    { scenario: '🗂️ SQS で障害耐性を高める設計は？', choices: ['非同期キューで処理失敗時に再処理', '同期REST連携', '単一インスタンスに集約', 'DB を共有ストレージにする'], correct: 0, explanation: 'DLQ で失敗メッセージを分離調査可能。' },
+    { scenario: '📋 ゲームデイ演習の目的は？', choices: ['意図的に障害を起こしてシステムの回復力を検証', '新機能の負荷テスト', 'チームのスキル評価', 'コスト最適化'], correct: 0, explanation: 'AWS Fault Injection Simulator でテスト可能。' },
+  ],
+};
+
+// Test 4: Monitoring and Logging
+const TEST4 = {
+  id: 4, title: '📊 テスト４', type: 'Monitoring & Logging',
+  emoji: '📊', subtitle: 'モニタリング・ログ管理の問題！',
+  questions: [
+    { scenario: '📈 CloudWatch の主な機能は？', choices: ['メトリクス収集・アラーム・ログ管理', 'ビルドとデプロイ', 'リソースプロビジョニング', '脆弱性スキャン'], correct: 0, explanation: null },
+    { scenario: '🔎 AWS X-Ray の目的は？', choices: ['分散アプリのリクエストをトレース・分析する', 'ログを長期保存', 'コストを分析', 'セキュリティインシデント検出'], correct: 0, explanation: 'マイクロサービス構成でボトルネック可視化。' },
+    { scenario: '🚨 CloudWatch アラーム ALARM 時の自動対応は？', choices: ['SNS 経由で Lambda・Auto Scaling をトリガー', '手動で EC2 再起動', 'CloudFormation 自動更新', 'S3 にログ自動エクスポート'], correct: 0, explanation: null },
+    { scenario: '⚡ EventBridge の説明は？', choices: ['AWS サービスのイベントをルール配信する', 'ログ分析サービス', 'EC2 死活監視', 'デプロイ管理'], correct: 0, explanation: 'イベント駆動アーキテクチャの中心。cron 実行も可能。' },
+    { scenario: '🕵️ CloudTrail の用途は？', choices: ['API 呼び出しを記録・監査する', 'パフォーマンス監視', 'システムログ収集', '変更履歴管理'], correct: 0, explanation: '「誰が・いつ・何を」の監査証跡。CloudWatch はメトリクス監視。' },
+    { scenario: '🔍 CloudWatch Logs Insights の用途は？', choices: ['ログをクエリ言語で検索・分析', 'SSH 接続', 'テンプレートエラー検出', 'アクセスログ管理'], correct: 0, explanation: null },
+    { scenario: '🛡️ GuardDuty の説明は？', choices: ['脅威インテリジェンスで悪意ある活動を検出', 'パフォーマンス最適化', 'コスト管理', '静的解析'], correct: 0, explanation: 'VPC フロー・DNS ログ・CloudTrail を分析。Inspector は脆弱性スキャン。' },
+    { scenario: '🔔 Composite Alarms の特徴は？', choices: ['複数アラームを AND/OR 条件で組み合わせ', 'EC2 自動再起動', 'ログ自動転送', 'コスト超過アラート'], correct: 0, explanation: null },
+    { scenario: '📌 CloudWatch メトリクス発行の最小粒度は？', choices: ['1秒', '5秒', '1分', '5分'], correct: 0, explanation: 'カスタムメトリクス発行は 1秒粒度で可能。' },
+    { scenario: '🏥 Health Dashboard の目的は？', choices: ['AWS 障害情報・アカウント影響を確認', 'EC2 ヘルスチェック設定', 'アプリ死活監視', 'スケーリング履歴'], correct: 0, explanation: null },
+  ],
+};
+
+// Test 5: Incident and Event Response
+const TEST5 = {
+  id: 5, title: '🚨 テスト５', type: 'Incident & Event Response',
+  emoji: '🚨', subtitle: 'インシデント対応・イベント管理の問題！',
+  questions: [
+    { scenario: '⚡ EventBridge の用途として正しいのは？', choices: ['AWS サービス間のイベント駆動連携', 'ログ保存', 'リソース管理', 'コスト計算'], correct: 0, explanation: null },
+    { scenario: '🔔 SNS の主な役割は？', choices: ['メッセージを配信・通知する', 'ログを保存', 'リソースをプロビジョニング', 'アプリをビルド'], correct: 0, explanation: 'SNS はパブサブメッセージング。SQS はキューイング。' },
+    { scenario: '📋 Systems Manager OpsCenter の目的は？', choices: ['運用上の問題（OpsItems）を一元管理・解決', 'パッチ適用自動化', 'スタック管理', 'ビルドログ保存'], correct: 0, explanation: 'パッチ適用は Patch Manager の役割。' },
+    { scenario: '🔄 Systems Manager Automation の用途は？', choices: ['AWS リソースの操作をワークフロー化・自動化', 'コードをビルド', 'リソース設定を定義', 'ログを分析'], correct: 0, explanation: null },
+    { scenario: '📞 SNS vs SQS の使い分けは？', choices: ['SNS は通知（プッシュ）、SQS はキューイング（プル）', '用途は同じ', 'SNS でキュー、SQS で通知', '価格が異なるだけ'], correct: 0, explanation: '組み合わせて使うことも。SNS→SQS パターン。' },
+    { scenario: '🎯 Lambda トリガーの例として正しいのは？', choices: ['S3 PutObject、SQS メッセージ、CloudWatch Events など', 'EC2 インスタンス起動のみ', 'VPC 変更のみ', 'IAM ポリシー更新のみ'], correct: 0, explanation: null },
+    { scenario: '📊 CloudWatch Alarms を SNS・Lambda に連携させる目的は？', choices: ['監視条件をトリガーに自動対応させる', 'ログを保存', 'コスト削減', 'リソース定義'], correct: 0, explanation: '自己修復や通知などの自動化が可能。' },
+    { scenario: '🔐 Secrets Manager の自動ローテーションの役割は？', choices: ['定期的に機密情報を更新・管理する', 'ログを保存', 'リソースをスケール', 'テンプレートを定義'], correct: 0, explanation: null },
+    { scenario: '📢 SNS トピックのアクセス制御は？', choices: ['リソースベースのポリシーで制御', 'IAM ロールのみ', 'セキュリティグループのみ', 'VPC エンドポイントのみ'], correct: 0, explanation: null },
+    { scenario: '⏰ Lambda 実行時間制限は？', choices: ['最大 15 分', '最大 5 分', '最大 30 分', '無制限'], correct: 0, explanation: '長時間実行は Step Functions や EC2 を使う。' },
+  ],
+};
+
+// Test 6: Security and Compliance
+const TEST6 = {
+  id: 6, title: '🔒 テスト６', type: 'Security & Compliance',
+  emoji: '🔒', subtitle: 'セキュリティ・コンプライアンスの問題！',
+  questions: [
+    { scenario: '🔑 最小権限の原則とは？', choices: ['必要最低限の権限だけを付与', '全員に管理者権限を付与', 'アクセスキーのみで管理', 'パブリックアクセスを許可'], correct: 0, explanation: null },
+    { scenario: '🏷️ IAM Roles vs Users の違いは？', choices: ['Roles は一時認証（STS）、Users は長期アクセスキー', '同じもの', 'Roles が強力', 'Users が一時的'], correct: 0, explanation: 'Roles の方がセキュア（自動更新）。' },
+    { scenario: '🔒 Secrets Manager の用途は？', choices: ['機密情報を安全に保存・自動ローテーション', 'ログ保存', 'テンプレート保存', 'アクセス制御'], correct: 0, explanation: 'Parameter Store より自動ローテーション機能が充実。' },
+    { scenario: '🛡️ AWS Shield の役割は？', choices: ['DDoS 攻撃から保護', 'SQL インジェクション防止', 'IAM 誤設定検出', 'S3 公開制限'], correct: 0, explanation: 'WAF はアプリ層攻撃（SQLi・XSS）防止。' },
+    { scenario: '📜 CloudTrail の証跡を複数リージョンに適用するには？', choices: ['「すべてのリージョンに適用」を有効化', '各リージョンで個別作成', 'CloudWatch 連携', 'IAM で設定'], correct: 0, explanation: null },
+    { scenario: '🔍 Inspector の役割は？', choices: ['EC2・コンテナの脆弱性をスキャン', '脅威検出', 'ビルド自動化', 'ネットワーク分析'], correct: 0, explanation: 'GuardDuty は動作ベース脅威検出。' },
+    { scenario: '🌐 WAF で設定できるルールは？', choices: ['IP・SQLi・XSS パターンをブロック', 'CPU スケーリングルール', 'テンプレート更新制限', 'パスワードポリシー'], correct: 0, explanation: null },
+    { scenario: '🏢 Organizations SCP（Service Control Policy）の用途は？', choices: ['アカウントが使用できるサービス・操作を制限', '請求を分割', 'インスタンススペック制限', 'ストレージ制限'], correct: 0, explanation: 'SCP は IAM より上位。SCP で拒否なら IAM で許可しても実行不可。' },
+    { scenario: '🔐 S3 への意図しないパブリックアクセスを防ぐには？', choices: ['ブロックパブリックアクセス設定を有効化', 'IAM で拒否', 'セキュリティグループで制限', 'CloudFront で制限'], correct: 0, explanation: null },
+    { scenario: '📊 Security Hub の役割は？', choices: ['GuardDuty・Inspector など複数サービスの検出結果を一元管理', 'DDoS 防止', 'SSH 管理', 'コスト最適化'], correct: 0, explanation: null },
+  ],
+};
+
+const TESTS = [TEST1, TEST2, TEST3, TEST4, TEST5, TEST6];
+const TOTAL_QUESTIONS = 60;
+
+let currentTest = null, currentQ = 0, answers = [], shuffledChoices = [];
+let currentLevel = 1;
+
+async function loadQuestions(level = 1) {
+  try {
+    const res = await fetch(`questions${level}.json`);
+    const data = await res.json();
+    TESTS = data.tests;
+    showHome();
+  } catch (e) {
+    console.error('Failed to load questions:', e);
+    document.body.innerHTML = '<p style="padding:40px;text-align:center;color:#e53e3e;">問題ファイルの読み込みに失敗しました</p>';
+  }
+}
+
+function switchLevel(level) {
+  if (level === currentLevel) return;
+  currentLevel = level;
+  [1, 2, 3].forEach(i => {
+    document.getElementById(`level-btn-${i}`).classList.toggle('active', i === level);
+  });
+  soundClick();
+  loadQuestions(level);
+}
+
+function getBest(id) { return parseInt(localStorage.getItem(`best_${currentLevel}_${id}`) || '-1', 10); }
+function setBest(id, s) { if (s > getBest(id)) localStorage.setItem(`best_${currentLevel}_${id}`, s); }
+function resetScores() {
+  if (!confirm('🗑️ このレベルの最高得点をリセットしますか？')) return;
+  TESTS.forEach(t => localStorage.removeItem(`best_${currentLevel}_${t.id}`));
+  soundClick(); showHome();
+}
+
+function getTotalCorrect() {
+  let total = 0, attempted = 0;
+  TESTS.forEach(t => {
+    const best = getBest(t.id);
+    if (best >= 0) { total += Math.round(best / 100 * 10); attempted++; }
+  });
+  return { total, attempted };
+}
+
+function launchConfetti(count = 60) {
+  const wrap = document.getElementById('confetti-wrap');
+  wrap.innerHTML = '';
+  const colors = ['#f7971e','#ffd200','#21d4fd','#b721ff','#0f2027','#38a169','#f5576c'];
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+    el.style.animationDelay = (Math.random() * 0.8) + 's';
+    el.style.width = el.style.height = (6 + Math.random() * 8) + 'px';
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    wrap.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+}
+
+function showHome() {
+  document.getElementById('screen-home').classList.remove('hidden');
+  document.getElementById('screen-quiz').classList.add('hidden');
+  document.getElementById('screen-results').classList.add('hidden');
+
+  const { total, attempted } = getTotalCorrect();
+  const totalEl = document.getElementById('total-score-display');
+  if (attempted === 0) {
+    totalEl.innerHTML = `- <span>/ ${TOTAL_QUESTIONS}問</span>`;
+  } else {
+    totalEl.innerHTML = `${total} <span>/ ${TOTAL_QUESTIONS}問 正解</span>`;
+  }
+
+  document.getElementById('test-grid').innerHTML = TESTS.map(t => {
+    const best = getBest(t.id);
+    const bestTxt = best >= 0 ? `🏆 最高 <span>${best}点</span>` : '🔰 未挑戦';
+    return `<div class="test-card" onclick="startTest(${t.id}); soundClick();">
+      <span class="card-emoji">${t.emoji}</span>
+      <h2>${t.title}</h2>
+      <span class="test-type">${t.type}</span>
+      <p class="best-score">${bestTxt}</p>
+    </div>`;
+  }).join('');
+
+  // Debug: Show touch device detection and build time
+  const isTouchDevice = () => {
+    return (('ontouchstart' in window) ||
+            (navigator.maxTouchPoints > 0) ||
+            (navigator.msMaxTouchPoints > 0));
+  };
+  const buildTime = '2026-05-06 04:13:04';
+  const debugEl = document.createElement('div');
+  debugEl.style.cssText = 'position:fixed;bottom:8px;left:8px;font-size:0.65rem;color:#999;background:rgba(0,0,0,0.1);padding:4px 8px;border-radius:4px;z-index:1000;line-height:1.3;';
+  debugEl.innerHTML = (isTouchDevice() ? '📱 Touch' : '🖥️ PC') + '<br>' + buildTime;
+  document.body.appendChild(debugEl);
+}
+
+function startTest(id) {
+  currentTest = TESTS.find(t => t.id === id);
+  currentQ = 0; answers = [];
+  document.getElementById('screen-home').classList.add('hidden');
+  document.getElementById('screen-quiz').classList.remove('hidden');
+  document.getElementById('screen-results').classList.add('hidden');
+  renderQuestion();
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const CORRECT_MSGS = ['✅ 正解！やったね！', '🎯 その通り！完璧！', '⭐ 正解！さすが！'];
+const WRONG_MSGS   = ['❌ 残念...確認しよう！', '💔 惜しい！正解を見てね'];
+
+function renderQuestion() {
+  const q = currentTest.questions[currentQ];
+  const total = currentTest.questions.length;
+  const pct = Math.round((currentQ / total) * 100);
+
+  document.getElementById('quiz-title').textContent    = currentTest.title;
+  document.getElementById('quiz-subtitle').textContent = currentTest.subtitle;
+  document.getElementById('progress-bar').style.width  = pct + '%';
+  document.getElementById('progress-label').textContent = `第 ${currentQ + 1} 問 ／ ${total} 問`;
+  document.getElementById('progress-pct').textContent   = pct + '%';
+  document.getElementById('scenario').textContent       = q.scenario;
+  document.getElementById('feedback').className         = 'feedback';
+  document.getElementById('explanation').className      = 'explanation';
+  document.getElementById('next-btn').style.display     = 'none';
+
+  const indexed = shuffle(q.choices.map((c, i) => ({ choice: c, origIdx: i })));
+  shuffledChoices = indexed;
+  const correctShuffledIdx = indexed.findIndex(x => x.origIdx === q.correct);
+
+  document.getElementById('choices').innerHTML = indexed.map((item, i) =>
+    `<button class="choice-btn" onclick="answer(${i},${correctShuffledIdx})" id="choice-${i}">${item.choice}</button>`
+  ).join('');
+}
+
+function answer(idx, correctIdx) {
+  const q = currentTest.questions[currentQ];
+  const ok = idx === correctIdx;
+  answers.push({ correct: ok, chosenOrigIdx: shuffledChoices[idx].origIdx });
+
+  shuffledChoices.forEach((_, i) => { document.getElementById(`choice-${i}`).disabled = true; });
+  const ansBtn = document.getElementById(`choice-${idx}`);
+  ansBtn.classList.add(ok ? 'correct' : 'wrong');
+  const isLast = currentQ === currentTest.questions.length - 1;
+  const goNext = () => { soundClick(); isLast ? showResults() : nextQuestion(); };
+  const nextLabel = isLast ? '→ 結果を見る' : '→ 次の問題';
+  if (ok) {
+    ansBtn.innerHTML = `<span>${ansBtn.textContent}</span><span class="next-indicator">${nextLabel}</span>`;
+    ansBtn.disabled = false;
+    ansBtn.onclick = goNext;
+    ansBtn.focus();
+  }
+  const correctBtn = document.getElementById(`choice-${correctIdx}`);
+  if (!ok) {
+    correctBtn.classList.add('reveal');
+    correctBtn.disabled = false;
+    correctBtn.innerHTML = `<span>${correctBtn.textContent}</span><span class="next-indicator">${nextLabel}</span>`;
+    correctBtn.onclick = goNext;
+  }
+
+  const fb = document.getElementById('feedback');
+  fb.className = `feedback ${ok ? 'correct' : 'wrong'}`;
+  fb.textContent = ok ? CORRECT_MSGS[Math.floor(Math.random() * CORRECT_MSGS.length)] : WRONG_MSGS[Math.floor(Math.random() * WRONG_MSGS.length)];
+
+  if (q.explanation) {
+    const exp = document.getElementById('explanation');
+    exp.textContent = '💡 ' + q.explanation;
+    exp.className = 'explanation show';
+  }
+
+  ok ? soundCorrect() : soundWrong();
+
+  document.getElementById('next-btn').style.display = 'none';
+}
+
+function nextQuestion() { currentQ++; renderQuestion(); }
+
+function showResults() {
+  const total   = currentTest.questions.length;
+  const correct = answers.filter(a => a.correct).length;
+  const score   = Math.round((correct / total) * 100);
+  setBest(currentTest.id, score);
+  const best  = getBest(currentTest.id);
+
+  document.getElementById('screen-quiz').classList.add('hidden');
+  document.getElementById('screen-results').classList.remove('hidden');
+  document.getElementById('result-title').textContent = currentTest.title + ' 結果 🎉';
+  document.getElementById('score-num').textContent    = score;
+
+  const stars = score === 100 ? '⭐⭐⭐' : score >= 70 ? '⭐⭐' : score >= 40 ? '⭐' : '　';
+  document.getElementById('score-stars').textContent = stars;
+  document.getElementById('score-msg').textContent = score === 100 ? '🏆 満点！' : score >= 80 ? '🌟 すごい！' : score >= 60 ? '💪 惜しい！' : score >= 40 ? '📚 復習しよう' : '😅 もう一度';
+  document.getElementById('best-msg').textContent = `🏅 最高: ${best}点`;
+
+  if (score === 100) { soundFanfare(); setTimeout(() => launchConfetti(80), 300); }
+  else if (score >= 70) { soundGood(); setTimeout(() => launchConfetti(30), 300); }
+  else soundClick();
+
+  document.getElementById('answer-list').innerHTML = currentTest.questions.map((q, i) => {
+    const ans = answers[i];
+    const correctText = q.choices[q.correct];
+    const chosenText = q.choices[ans.chosenOrigIdx];
+    let detail = `<span>${q.scenario}</span><br><span style="color:#555;font-size:0.82rem">正解: ${correctText}</span>`;
+    if (!ans.correct) detail += `<br><span style="color:#e53e3e;font-size:0.82rem">あなた: ${chosenText}</span>`;
+    if (q.explanation) detail += `<div class="exp">💡 ${q.explanation}</div>`;
+    return `<div class="answer-row"><span class="q-num">Q${i + 1}</span><span class="mark">${ans.correct ? '✅' : '❌'}</span><div class="answer-detail">${detail}</div></div>`;
+  }).join('');
+}
+
+loadQuestions(1);
+</script>
+</body>
+</html>
