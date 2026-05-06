@@ -208,10 +208,18 @@ async function loadQuestions(level = 1) {
     const res = await fetch(`questions${level}.json`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    if (!data.tests || !Array.isArray(data.tests)) {
-      throw new Error('Invalid JSON structure: tests is not an array');
+    console.log('Loaded data:', data);
+    if (!data || typeof data !== 'object') {
+      throw new Error('Data is not an object');
+    }
+    if (!data.tests) {
+      throw new Error('data.tests is undefined');
+    }
+    if (!Array.isArray(data.tests)) {
+      throw new Error(`tests is not an array, it's ${typeof data.tests}`);
     }
     TESTS = data.tests;
+    console.log('TESTS assigned:', TESTS.length, 'items');
     showHome();
   } catch (e) {
     console.error('Failed to load questions:', e);
@@ -219,7 +227,7 @@ async function loadQuestions(level = 1) {
     document.getElementById('screen-home').classList.remove('hidden');
     document.getElementById('screen-quiz').classList.add('hidden');
     document.getElementById('screen-results').classList.add('hidden');
-    document.getElementById('test-grid').innerHTML = '<p style="color:#e53e3e;padding:20px;text-align:center;">問題ファイルの読み込みに失敗しました</p>';
+    document.getElementById('test-grid').innerHTML = '<p style="color:#e53e3e;padding:20px;text-align:center;">問題ファイルの読み込みに失敗: ' + e.message + '</p>';
   }
 }
 
@@ -245,8 +253,13 @@ function resetScores() {
 
 function getTotalCorrect() {
   let total = 0, attempted = 0;
+  console.log('getTotalCorrect called, TESTS =', TESTS);
+  if (!TESTS) {
+    console.error('TESTS is null or undefined');
+    return { total: 0, attempted: 0 };
+  }
   if (!Array.isArray(TESTS)) {
-    console.warn('TESTS is not an array:', TESTS);
+    console.error('TESTS is not an array:', typeof TESTS, TESTS);
     return { total: 0, attempted: 0 };
   }
   TESTS.forEach(t => {
