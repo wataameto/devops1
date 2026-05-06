@@ -116,7 +116,7 @@
             "VPC エンドポイントが作成されているか。"
           ],
           "correct": 0,
-          "explanation": "Secrets Manager の自動ローテーション機能で、定期的に機密情報（DB パスワードなど）を安全に更新・管理できます。"
+          "explanation": "Inspector はリモートスキャンのため、Systems Manager (SSM) エージェント経由で脆弱性情報を収集します。SSM エージェントが起動していない、または IAM ロールの権限不足が主な原因です。"
         }
       ]
     },
@@ -169,7 +169,7 @@
             "AWS-CopySnapshot"
           ],
           "correct": 0,
-          "explanation": "Secrets Manager は機密情報を安全に保存・自動ローテーションでき、Parameter Store より管理機能が充実しています。"
+          "explanation": "State Manager で 継続的に「あるべき姿」を維持するには、AWS-RunPatchBaseline や AWS-ApplyAutomationRecipe などの Documents (ドキュメント) を使用します。"
         },
         {
           "scenario": "Auto Scaling グループで、スケールイン時に特定の「計算処理中のインスタンス」が削除されるのを防ぐための設定は？",
@@ -570,7 +570,7 @@
             "MaintenanceWindow"
           ],
           "correct": 0,
-          "explanation": "Secrets Manager の自動ローテーション機能で機密情報を定期更新・管理できます。"
+          "explanation": "Systems Manager パッチマネージャーではタグキー『Patch Group』を使ってパッチグループを識別します。タグ値がパッチグループ名になり、異なるスケジュール設定ができます。"
         },
         {
           "scenario": "AWS CloudMap と Amazon ECS を連携させた「サービス検出」で、コンテナの IP アドレスが変更された際に自動更新される DNS レコードの種類は？",
@@ -634,7 +634,7 @@
             "VPC エンドポイントがない。"
           ],
           "correct": 0,
-          "explanation": "Secrets Manager は組み込みローテーション機能で機密情報を安全に管理します。"
+          "explanation": "CloudWatch Logs のエクスポートタスクで S3 にログを送る際、S3 バケットポリシーで logs.amazonaws.com に PutObject 権限を許可する必要があります。これが設定されていないとログが表示されません。"
         },
         {
           "scenario": "AWS Systems Manager の「高速セットアップ (Quick Setup)」で自動化できる運用タスクは？",
