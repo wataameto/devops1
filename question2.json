@@ -1,0 +1,253 @@
+{
+  "examTitle": "AWS Certified DevOps Engineer - Professional (DOP-C02) Intermediate",
+  "totalQuestions": 60,
+  "questions": [
+    {
+      "questionNumber": 1,
+      "question": "AWS CodePipeline でクロスアカウントデプロイを構成する際、アーティファクトストアの S3 バケットで必要な設定はどれですか？",
+      "answerOptions": [
+        { "text": "送信先アカウントへのアクセスを許可するバケットポリシーを適用し、KMS カスタマーマネージドキーを使用する。", "isCorrect": true },
+        { "text": "パブリックアクセスを許可する。", "isCorrect": false },
+        { "text": "デフォルトの AWS マネージド型 S3 キーを使用する。", "isCorrect": false },
+        { "text": "S3 静的ウェブサイトホスティングを有効にする。", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 2,
+      "question": "CodeDeploy で Lambda のトラフィックを 10% ずつ 10 分ごとに増やす設定はどれですか？",
+      "answerOptions": [
+        { "text": "LambdaLinear10PercentEvery10Minutes", "isCorrect": true },
+        { "text": "LambdaCanary10Percent10Minutes", "isCorrect": false },
+        { "text": "LambdaAllAtOnce", "isCorrect": false },
+        { "text": "LambdaBlueGreen10Percent", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 3,
+      "question": "CloudFormation でスタックの削除時に特定の S3 バケットだけを残したい場合の設定はどれですか？",
+      "answerOptions": [
+        { "text": "DeletionPolicy: Retain", "isCorrect": true },
+        { "text": "UpdateReplacePolicy: Delete", "isCorrect": false },
+        { "text": "Metadata: Keep", "isCorrect": false },
+        { "text": "TerminationProtection: Enable", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 4,
+      "question": "Auto Scaling グループで、新しいインスタンスがトラフィックを受ける前にウォームアップ時間を設けたい場合に使用する機能は？",
+      "answerOptions": [
+        { "text": "ヘルスチェックの猶予期間 (Health Check Grace Period)", "isCorrect": true },
+        { "text": "クールダウン期間", "isCorrect": false },
+        { "text": "終了ポリシー", "isCorrect": false },
+        { "text": "ライフサイクルフック", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 5,
+      "question": "AWS Organizations で全アカウントに対して特定のリージョン以外の使用を禁止するガードレールは？",
+      "answerOptions": [
+        { "text": "サービスコントロールポリシー (SCP)", "isCorrect": true },
+        { "text": "IAM 境界 (Permission Boundary)", "isCorrect": false },
+        { "text": "AWS Config ルール", "isCorrect": false },
+        { "text": "Resource Access Manager", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 6,
+      "question": "CodeBuild のビルド環境で、Docker イメージのレイヤーキャッシュを有効にしてビルドを高速化する方法は？",
+      "answerOptions": [
+        { "text": "buildspec.yml で cache セクションに docker レイヤを定義し、プロジェクトの設定でローカルキャッシュまたは S3 キャッシュを有効にする。", "isCorrect": true },
+        { "text": "インスタンスの RAM ディスクを使用する。", "isCorrect": false },
+        { "text": "常に特権モードをオフにする。", "isCorrect": false },
+        { "text": "ソースプロバイダーを S3 に限定する。", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 7,
+      "question": "Systems Manager パッチマネージャーを使用して、非準拠のインスタンスを特定しつつパッチは当てない操作はどれですか？",
+      "answerOptions": [
+        { "text": "スキャン操作 (Scan)", "isCorrect": true },
+        { "text": "インストール操作 (Install)", "isCorrect": false },
+        { "text": "承認済みリストの更新", "isCorrect": false },
+        { "text": "インスタンスの再起動", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 8,
+      "question": "Amazon EventBridge を使用して、EC2 の状態変化を検知し Lambda を起動する構成において、フィルタリングを行う場所はどこですか？",
+      "answerOptions": [
+        { "text": "EventBridge のイベントパターン", "isCorrect": true },
+        { "text": "IAM ポリシー", "isCorrect": false },
+        { "text": "CloudWatch ロググループ", "isCorrect": false },
+        { "text": "Lambda の環境変数", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 9,
+      "question": "CloudFormation のドリフト検出機能で特定できる内容はどれですか？",
+      "answerOptions": [
+        { "text": "マネジメントコンソール等で直接変更されたリソース設定とテンプレートの差異", "isCorrect": true },
+        { "text": "テンプレート内の構文エラー", "isCorrect": false },
+        { "text": "リソースの削除コストの予測", "isCorrect": false },
+        { "text": "IAM ユーザーのログイン履歴", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 10,
+      "question": "Blue/Green デプロイメントにおいて、Route 53 の加重レコードを使用する利点は？",
+      "answerOptions": [
+        { "text": "トラフィックの割合を段階的に変更し、新バージョンのテストができる。", "isCorrect": true },
+        { "text": "IP アドレスを隠蔽できる。", "isCorrect": false },
+        { "text": "コストが無料になる。", "isCorrect": false },
+        { "text": "SSL 証明書が不要になる。", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 11,
+      "question": "AWS Secrets Manager と Parameter Store の主な違いで、Secrets Manager にしかない機能は？",
+      "answerOptions": [
+        { "text": "組み込みのシークレットローテーション機能（Lambda 連携）", "isCorrect": true },
+        { "text": "暗号化機能", "isCorrect": false },
+        { "text": "階層構造による管理", "isCorrect": false },
+        { "text": "IAM によるアクセス制御", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 12,
+      "question": "Amazon Inspector を使用して EC2 インスタンスの脆弱性をスキャンする際、必要なコンポーネントは？",
+      "answerOptions": [
+        { "text": "AWS Systems Manager (SSM) エージェント", "isCorrect": true },
+        { "text": "Inspector エージェント（レガシー版以外は SSM 経由）", "isCorrect": false },
+        { "text": "CloudWatch エージェント", "isCorrect": false },
+        { "text": "CodeDeploy エージェント", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 13,
+      "question": "Config ルールを使用して「すべての EC2 にタグが付いていること」を確認し、付いていない場合に自動で修正（修復）する機能は？",
+      "answerOptions": [
+        { "text": "AWS Config の修復アクション (SSM Automation 連携)", "isCorrect": true },
+        { "text": "CloudFormation スタックの更新", "isCorrect": false },
+        { "text": "IAM ロールの継承", "isCorrect": false },
+        { "text": "Lambda の定期実行のみ", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 14,
+      "question": "Amazon CloudWatch Logs で機密情報をマスクするための機能は？",
+      "answerOptions": [
+        { "text": "ログデータの保護（Data Protection）ポリシー", "isCorrect": true },
+        { "text": "サブスクリプションフィルタ", "isCorrect": false },
+        { "text": "メトリクスフィルタ", "isCorrect": false },
+        { "text": "ロググループの暗号化のみ", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 15,
+      "question": "Elastic Beanstalk で、デプロイ中に新しいインスタンスのバッチを別途作成し、成功を確認してから入れ替えるポリシーは？",
+      "answerOptions": [
+        { "text": "Immutable デプロイ", "isCorrect": true },
+        { "text": "Rolling デプロイ", "isCorrect": false },
+        { "text": "All at once デプロイ", "isCorrect": false },
+        { "text": "Rebuild デプロイ", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 16,
+      "question": "Kinesis Data Firehose から S3 にログを配信する際、分析効率を上げるために Firehose 側で実行できる処理は？",
+      "answerOptions": [
+        { "text": "データの圧縮およびフォーマット変換 (Parquet/ORC)", "isCorrect": true },
+        { "text": "SQL クエリの直接実行", "isCorrect": false },
+        { "text": "S3 バケットの削除", "isCorrect": false },
+        { "text": "IAM ユーザーの作成", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 17,
+      "question": "マルチアカウント環境で CloudTrail ログを 1 つのアカウントに集約する最適な方法は？",
+      "answerOptions": [
+        { "text": "AWS Organizations で組織のトレイルを作成し、中央アカウントの S3 にログを送信する。", "isCorrect": true },
+        { "text": "各アカウントから S3 クロスリージョンレプリケーションを使う。", "isCorrect": false },
+        { "text": "各アカウントの Lambda でログを転送する。", "isCorrect": false },
+        { "text": "VPC ピアリング経由で転送する。", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 18,
+      "question": "OpsWorks で、インスタンスの起動や設定変更時に自動的に実行されるスクリプトの集まりを何と呼びますか？",
+      "answerOptions": [
+        { "text": "クックブック (Cookbooks)", "isCorrect": true },
+        { "text": "マニフェスト (Manifests)", "isCorrect": false },
+        { "text": "ビルドスペック (Buildspecs)", "isCorrect": false },
+        { "text": "プレイブック (Playbooks)", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 19,
+      "question": "CloudWatch アラームの状態が ALARM になった際、自動的に EC2 インスタンスを終了させるアクションを追加できますか？",
+      "answerOptions": [
+        { "text": "はい、EC2 アクションとして停止、終了、再起動、または復旧を設定できる。", "isCorrect": true },
+        { "text": "いいえ、Lambda を経由しなければならない。", "isCorrect": false },
+        { "text": "いいえ、通知 (SNS) のみ可能である。", "isCorrect": false },
+        { "text": "はい、ただし S3 バケットへの保存が必要である。", "isCorrect": false }
+      ]
+    },
+    {
+      "questionNumber": 20,
+      "question": "CodeCommit で、特定のブランチ（main など）への直接プッシュを禁止し、プルリクエストを強制するために併用すべき機能は？",
+      "answerOptions": [
+        { "text": "IAM ポリシーによる Deny ルールとブランチ保護ルール", "isCorrect": true },
+        { "text": "S3 バケットポリシー", "isCorrect": false },
+        { "text": "VPC エンドポイント", "isCorrect": false },
+        { "text": "AWS Config", "isCorrect": false }
+      ]
+    },
+    { "questionNumber": 21, "question": "AWS X-Ray でアプリケーションの各コンポーネント間の呼び出し関係を可視化するツールは？", "answerOptions": [{ "text": "サービスマップ", "isCorrect": true }, { "text": "トレースビューア", "isCorrect": false }, { "text": "CloudWatch ダッシュボード", "isCorrect": false }, { "text": "VPC フローログ", "isCorrect": false }] },
+    { "questionNumber": 22, "question": "CloudFormation の「スタックセット (StackSets)」の主な用途は？", "answerOptions": [{ "text": "複数の AWS アカウントやリージョンに対して一括でスタックを作成・更新する。", "isCorrect": true }, { "text": "スタックを削除から保護する。", "isCorrect": false }, { "text": "リソースのコストを計算する。", "isCorrect": false }, { "text": "テンプレートを自動生成する。", "isCorrect": false }] },
+    { "questionNumber": 23, "question": "Amazon GuardDuty が検出した脅威情報を自動的に修復するために推奨される組み合わせは？", "answerOptions": [{ "text": "EventBridge + Lambda (または Step Functions)", "isCorrect": true }, { "text": "S3 + Athena", "isCorrect": false }, { "text": "CloudTrail + Config", "isCorrect": false }, { "text": "Inspector + Systems Manager", "isCorrect": false }] },
+    { "questionNumber": 24, "question": "CloudWatch Logs サブスクリプションフィルタでサポートされていない送信先は？", "answerOptions": [{ "text": "Amazon SNS", "isCorrect": true }, { "text": "Amazon Kinesis Data Streams", "isCorrect": false }, { "text": "Amazon Kinesis Data Firehose", "isCorrect": false }, { "text": "AWS Lambda", "isCorrect": false }] },
+    { "questionNumber": 25, "question": "CodeDeploy で、オンプレミスサーバーにデプロイするために最低限必要な構成は？",
+      "answerOptions": [
+        { "text": "サーバーへの CodeDeploy エージェントのインストールと、適切な IAM 権限を持つ IAM ユーザーまたはロールの紐付け", "isCorrect": true },
+        { "text": "Direct Connect の接続", "isCorrect": false },
+        { "text": "EC2 インスタンスへの変換", "isCorrect": false },
+        { "text": "AWS への VPN 接続のみ", "isCorrect": false }
+      ]
+    },
+    { "questionNumber": 26, "question": "AWS Systems Manager セッションマネージャーの主な利点は？", "answerOptions": [{ "text": "SSH キーの管理や受信ポート(22番等)の開放なしに、ブラウザや CLI から安全にインスタンスを操作できる。", "isCorrect": true }, { "text": "GUI 画面を転送できる。", "isCorrect": false }, { "text": "インスタンスを自動で起動できる。", "isCorrect": false }, { "text": "インターネットゲートウェイが不要になる。", "isCorrect": false }] },
+    { "questionNumber": 27, "question": "CodePipeline の「手動承認」アクションを実行する際、通知を送るために利用されるサービスは？", "answerOptions": [{ "text": "Amazon SNS", "isCorrect": true }, { "text": "Amazon SES", "isCorrect": false }, { "text": "Amazon SQS", "isCorrect": false }, { "text": "AWS Step Functions", "isCorrect": false }] },
+    { "questionNumber": 28, "question": "Auto Scaling ライフサイクルフックを使用中、処理が完了したことを Auto Scaling に伝えるためのコマンド（または API）は？", "answerOptions": [{ "text": "complete-lifecycle-action", "isCorrect": true }, { "text": "put-scaling-policy", "isCorrect": false }, { "text": "terminate-instance-in-auto-scaling-group", "isCorrect": false }, { "text": "record-lifecycle-action-heartbeat", "isCorrect": false }] },
+    { "questionNumber": 29, "question": "AWS Health Dashboard (旧 Personal Health Dashboard) の役割は？", "answerOptions": [{ "text": "AWS のインフラ障害やメンテナンス情報のうち、自分のリソースに影響があるものを表示する。", "isCorrect": true }, { "text": "自分の EC2 の CPU 使用率を表示する。", "isCorrect": false }, { "text": "OS の脆弱性を報告する。", "isCorrect": false }, { "text": "請求金額の予測を表示する。", "isCorrect": false }] },
+    { "questionNumber": 30, "question": "EC2 Auto Scaling で「古いインスタンスから順に削除したい」場合に使用する終了ポリシーは？", "answerOptions": [{ "text": "OldestInstance", "isCorrect": true }, { "text": "OldestLaunchConfiguration", "isCorrect": false }, { "text": "ClosestToNextInstanceHour", "isCorrect": false }, { "text": "Default", "isCorrect": false }] },
+    { "questionNumber": 31, "question": "CloudWatch のカスタムメトリクスで、標準の 1 分間隔よりも細かい（最短 1 秒）頻度でデータを送信する設定は？", "answerOptions": [{ "text": "高解像度 (High-resolution) メトリクス", "isCorrect": true }, { "text": "リアルタイムメトリクス", "isCorrect": false }, { "text": "詳細モニタリング", "isCorrect": false }, { "text": "アドバンスドメトリクス", "isCorrect": false }] },
+    { "questionNumber": 32, "question": "CodeBuild で、ビルドごとに新しい IAM ロールを動的に割り当てることは可能ですか？", "answerOptions": [{ "text": "いいえ、プロジェクトごとに 1 つのサービスロールを事前に割り当てる必要がある。", "isCorrect": true }, { "text": "はい、buildspec.yml で定義できる。", "isCorrect": false }, { "text": "はい、IAM ユーザーの認証情報を使用する。", "isCorrect": false }, { "text": "いいえ、常に root 権限で実行される。", "isCorrect": false }] },
+    { "questionNumber": 33, "question": "AWS Trusted Advisor がチェックしないカテゴリはどれですか？", "answerOptions": [{ "text": "アプリケーションのバグ分析", "isCorrect": true }, { "text": "コスト最適化", "isCorrect": false }, { "text": "セキュリティ", "isCorrect": false }, { "text": "パフォーマンス", "isCorrect": false }] },
+    { "questionNumber": 34, "question": "CloudFormation の「マクロ (Macros)」を使用すると何ができますか？", "answerOptions": [{ "text": "テンプレートの処理中に Lambda 関数を呼び出してカスタムの変換（置換など）を行える。", "isCorrect": true }, { "text": "スタックを自動で削除できる。", "isCorrect": false }, { "text": "コストを 50% 削減できる。", "isCorrect": false }, { "text": "マルチアカウントデプロイを行う。", "isCorrect": false }] },
+    { "questionNumber": 35, "question": "Amazon EventBridge パイプ (Pipes) の主な目的は？", "answerOptions": [{ "text": "異なるソース（SQS, DynamoDB ストリーム等）とターゲットをポイントツーポイントで簡単に統合する。", "isCorrect": true }, { "text": "VPC 間を接続する。", "isCorrect": false }, { "text": "S3 の容量を増やす。", "isCorrect": false }, { "text": "Docker イメージをビルドする。", "isCorrect": false }] },
+    { "questionNumber": 36, "question": "EC2 で稼働中のアプリの標準出力を CloudWatch Logs に送るために推奨される方法は？", "answerOptions": [{ "text": "CloudWatch エージェントをインストールして設定する。", "isCorrect": true }, { "text": "VPC フローログを有効にする。", "isCorrect": false }, { "text": "EC2 インスタンスタイプを変更する。", "isCorrect": false }, { "text": "AWS CLI を crontab で回す。", "isCorrect": false }] },
+    { "questionNumber": 37, "question": "AWS Systems Manager の「インベントリ (Inventory)」機能で収集できる情報は？", "answerOptions": [{ "text": "インスタンス内の OS バージョン、インストール済みソフト、ネットワーク設定などのメタデータ", "isCorrect": true }, { "text": "S3 バケット内のオブジェクト一覧", "isCorrect": false }, { "text": "IAM ユーザーのパスワード", "isCorrect": false }, { "text": "請求の詳細な明細", "isCorrect": false }] },
+    { "questionNumber": 38, "question": "CodeDeploy で「失敗した時に自動的にロールバックする」ためのトリガー条件として設定できるものは？", "answerOptions": [{ "text": "デプロイの失敗時、または CloudWatch アラームのしきい値超え", "isCorrect": true }, { "text": "SNS 通知が届かなかった時", "isCorrect": false }, { "text": "CodeCommit にプッシュされた時", "isCorrect": false }, { "text": "S3 バケットが一杯になった時", "isCorrect": false }] },
+    { "questionNumber": 39, "question": "AWS Application Cost Profiler の用途は？", "answerOptions": [{ "text": "複数のユーザーや組織で共有されているリソースのコストを、アプリケーション別に詳細に配分・分析する。", "isCorrect": true }, { "text": "単一アカウントの月額料金を見る。", "isCorrect": false }, { "text": "EC2 のスポットインスタンスの価格を予測する。", "isCorrect": false }, { "text": "AWS の請求書を発行する。", "isCorrect": false }] },
+    { "questionNumber": 40, "question": "CloudWatch ダッシュボードで複数のリージョンのメトリクスを 1 つの画面に表示できますか？", "answerOptions": [{ "text": "はい、表示できる。", "isCorrect": true }, { "text": "いいえ、リージョンごとにダッシュボードが分離されている。", "isCorrect": false }, { "text": "はい、ただし有料のアドオンが必要である。", "isCorrect": false }, { "text": "いいえ、CloudFormation で作成した場合のみ可能。", "isCorrect": false }] },
+    { "questionNumber": 41, "question": "Step Functions で、長時間実行されるワークフローのオーケストレーションを行う利点は？", "answerOptions": [{ "text": "状態管理、エラーハンドリング、リトライ処理をコードから分離して定義できる。", "isCorrect": true }, { "text": "Lambda の実行制限（15分）を 1 ステップで無視できる。", "isCorrect": false }, { "text": "コストが必ず Lambda 単体より安くなる。", "isCorrect": false }, { "text": "ソースコードを自動生成する。", "isCorrect": false }] },
+    { "questionNumber": 42, "question": "AWS Resource Groups の役割は？", "answerOptions": [{ "text": "タグなどに基づいて、関連するリソースを論理的にまとめて管理・監視しやすくする。", "isCorrect": true }, { "text": "複数の AWS アカウントを 1 つにまとめる。", "isCorrect": false }, { "text": "ユーザーをグループ化して IAM 権限を付与する。", "isCorrect": false }, { "text": "S3 のデータをフォルダ分けする。", "isCorrect": false }] },
+    { "questionNumber": 43, "question": "CloudFormation の `Transform: AWS::Serverless-2016-10-31` は何を示していますか？", "answerOptions": [{ "text": "そのテンプレートが SAM (Serverless Application Model) フォーマットであること", "isCorrect": true }, { "text": "スタックを 2016 年の仕様にダウングレードすること", "isCorrect": false }, { "text": "S3 バケットを自動で作成すること", "isCorrect": false }, { "text": "Docker コンテナを起動すること", "isCorrect": false }] },
+    { "questionNumber": 44, "question": "AWS AppConfig の主な用途は？", "answerOptions": [{ "text": "アプリケーションの設定値（機能フラグやパラメータ）を、再デプロイなしに安全に展開・管理する。", "isCorrect": true }, { "text": "EC2 の OS をインストールする。", "isCorrect": false }, { "text": "VPC のサブネット分割を行う。", "isCorrect": false }, { "text": "ソースコードの静的解析を行う。", "isCorrect": false }] },
+    { "questionNumber": 45, "question": "CloudWatch Logs Insights の機能は？", "answerOptions": [{ "text": "専用のクエリ言語を使用して、ログデータを高速に検索・分析・可視化する。", "isCorrect": true }, { "text": "ログを自動で削除する。", "isCorrect": false }, { "text": "ログを S3 にアーカイブする。", "isCorrect": false }, { "text": "ログに電子署名を付与する。", "isCorrect": false }] },
+    { "questionNumber": 46, "question": "CodeDeploy エラー `Health constraints invalid` の一般的な原因は？", "answerOptions": [{ "text": "最小健全ホスト数（Minimum Healthy Hosts）の要件を満たせないため、デプロイが停止している。", "isCorrect": true }, { "text": "IAM ロールに権限がない。", "isCorrect": false }, { "text": "ディスク容量が不足している。", "isCorrect": false }, { "text": "ネットワーク接続が切れている。", "isCorrect": false }] },
+    { "questionNumber": 47, "question": "AWS Service Catalog で管理者が行うべき操作は？", "answerOptions": [{ "text": "承認済みの CloudFormation テンプレートを「製品」として登録し、ユーザーにセルフサービスで提供する。", "isCorrect": true }, { "text": "S3 にソースコードをアップロードする。", "isCorrect": false }, { "text": "EC2 インスタンスを 1 台ずつ手動で構築する。", "isCorrect": false }, { "text": "ドメインを登録する。", "isCorrect": false }] },
+    { "questionNumber": 48, "question": "Amazon ECS のデプロイで「Rolling update」を選択した場合の挙動は？", "answerOptions": [{ "text": "古いタスクを徐々に停止し、新しいバージョンのタスクに順次入れ替える。", "isCorrect": true }, { "text": "すべてのタスクを一度に停止してから新しく作る。", "isCorrect": false }, { "text": "新しいロードバランサーを自動で作成する。", "isCorrect": false }, { "text": "デプロイを行わない。", "isCorrect": false }] },
+    { "questionNumber": 49, "question": "AWS CloudMap の主な役割は？", "answerOptions": [{ "text": "アプリケーション内のリソース（マイクロサービスなど）にカスタム名を付け、サービス検出を可能にする。", "isCorrect": true }, { "text": "インフラの地図を作成する。", "isCorrect": false }, { "text": "CloudFormation の依存関係を可視化する。", "isCorrect": false }, { "text": "世界地図上のリソース配置を表示する。", "isCorrect": false }] },
+    { "questionNumber": 50, "question": "AWS Audit Manager を使用して得られるメリットは？", "answerOptions": [{ "text": "AWS の利用状況を継続的に監査し、規制遵守 (コンプライアンス) のための証拠収集を自動化できる。", "isCorrect": true }, { "text": "アプリケーションのバグを見つける。", "isCorrect": false }, { "text": "AWS のコストを削減する。", "isCorrect": false }, { "text": "ネットワーク速度を向上させる。", "isCorrect": false }] },
+    { "questionNumber": 51, "question": "CodePipeline の「クロスリージョン」アクションの制約は？", "answerOptions": [{ "text": "アーティファクトストア（S3）がリージョンごとに必要になる。", "isCorrect": true }, { "text": "1 つの S3 バケットですべてまかなえる。", "isCorrect": false }, { "text": "クロスリージョンは不可能である。", "isCorrect": false }, { "text": "追加料金が一切かからない。", "isCorrect": false }] },
+    { "questionNumber": 52, "question": "Config ルールの「カスタムルール」を作成するために使用するサービスは？", "answerOptions": [{ "text": "AWS Lambda", "isCorrect": true }, { "text": "Amazon S3", "isCorrect": false }, { "text": "AWS CodeBuild", "isCorrect": false }, { "text": "Amazon SNS", "isCorrect": false }] },
+    { "questionNumber": 53, "question": "AWS CloudTrail Insights が検出するものは？", "answerOptions": [{ "text": "API コールのボリュームにおける異常なスパイクやアクティビティの増大", "isCorrect": true }, { "text": "IAM パスワードの有効期限", "isCorrect": false }, { "text": "EC2 の起動時間", "isCorrect": false }, { "text": "S3 バケットの合計サイズ", "isCorrect": false }] },
+    { "questionNumber": 54, "question": "Elastic Beanstalk で `.ebextensions` フォルダを置く場所は？", "answerOptions": [{ "text": "アプリケーションソースコードのルートディレクトリ", "isCorrect": true }, { "text": "S3 バケットのトップレベル", "isCorrect": false }, { "text": "/etc/aws フォルダ", "isCorrect": false }, { "text": "ホームディレクトリ", "isCorrect": false }] },
+    { "questionNumber": 55, "question": "AWS Systems Manager Patch Manager の「パッチベースライン」に設定できる内容は？", "answerOptions": [{ "text": "承認するパッチの分類（重大度、パッケージ名など）や、適用までの待機期間", "isCorrect": true }, { "text": "インスタンスの起動時間", "isCorrect": false }, { "text": "S3 のアクセス制限", "isCorrect": false }, { "text": "EC2 のインスタンスタイプ", "isCorrect": false }] },
+    { "questionNumber": 56, "question": "CloudWatch アラームで、一定期間データが届かない場合（データ不足）の挙動をどう設定すべきか？", "answerOptions": [{ "text": "missing データの処理方法（breaching、notBreaching、ignore、missing）を指定する。", "isCorrect": true }, { "text": "必ずアラーム状態にする。", "isCorrect": false }, { "text": "自動的にアラームを削除する。", "isCorrect": false }, { "text": "SNS でエラーを送るのみ。", "isCorrect": false }] },
+    { "questionNumber": 57, "question": "AWS Step Functions の「Express Workflows」が適しているケースは？", "answerOptions": [{ "text": "毎秒数千回の実行が必要な、短時間かつ高頻度のイベント駆動型ワークフロー", "isCorrect": true }, { "text": "1 年間続く長期のワークフロー", "isCorrect": false }, { "text": "手動承認が必要なワークフロー", "isCorrect": false }, { "text": "低コストで月 1 回だけ動かすバッチ", "isCorrect": false }] },
+    { "questionNumber": 58, "question": "Amazon X-Ray SDK をアプリに組み込む主な目的は？", "answerOptions": [{ "text": "送信リクエスト、受信リクエスト、リソースへの呼び出しに関するメタデータ（セグメント）を収集・送信するため", "isCorrect": true }, { "text": "動画を配信するため", "isCorrect": false }, { "text": "パスワードを暗号化するため", "isCorrect": false }, { "text": "ディスクをフォーマットするため", "isCorrect": false }] },
+    { "questionNumber": 59, "question": "CodePipeline で、ソースアクションの変更検出方法として推奨される（最も効率的な）ものは？", "answerOptions": [{ "text": "Amazon EventBridge (旧 CloudWatch Events)", "isCorrect": true }, { "text": "CodePipeline による定期的なポーリング", "isCorrect": false }, { "text": "手動での実行ボタンクリック", "isCorrect": false }, { "text": "SNS からの通知受信", "isCorrect": false }] },
+    { "questionNumber": 60, "question": "AWS Compute Optimizer が推奨を提供するために分析するデータは？", "answerOptions": [{ "text": "過去 14 日間（デフォルト）の CloudWatch メトリクス（CPU、メモリ、IO 等）の使用状況", "isCorrect": true }, { "text": "昨日の天気予報", "isCorrect": false }, { "text": "IAM ユーザーの権限", "isCorrect": false }, { "text": "S3 のオブジェクト数", "isCorrect": false }] }
+  ]
+}
