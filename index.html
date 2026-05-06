@@ -206,6 +206,7 @@ let currentLevel = 1;
 async function loadQuestions(level = 1) {
   try {
     const res = await fetch(`questions${level}.json`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     if (!data.tests || !Array.isArray(data.tests)) {
       throw new Error('Invalid JSON structure: tests is not an array');
@@ -214,7 +215,11 @@ async function loadQuestions(level = 1) {
     showHome();
   } catch (e) {
     console.error('Failed to load questions:', e);
-    document.body.innerHTML = '<p style="padding:40px;text-align:center;color:#e53e3e;">問題ファイルの読み込みに失敗しました: ' + e.message + '</p>';
+    TESTS = [];
+    document.getElementById('screen-home').classList.remove('hidden');
+    document.getElementById('screen-quiz').classList.add('hidden');
+    document.getElementById('screen-results').classList.add('hidden');
+    document.getElementById('test-grid').innerHTML = '<p style="color:#e53e3e;padding:20px;text-align:center;">問題ファイルの読み込みに失敗しました</p>';
   }
 }
 
