@@ -6,7 +6,7 @@
   <title>☁️ DOP-C02 練習問題</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; }
+    body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 12px 16px 16px 16px; }
     .container { background: #fff; border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.35); max-width: 720px; width: 100%; padding: 36px 32px; position: relative; overflow: hidden; }
     .container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, #f7971e, #ffd200, #21d4fd, #b721ff); }
     .home-header { text-align: center; margin-bottom: 24px; }
@@ -45,22 +45,20 @@
     .progress-top { display: flex; justify-content: space-between; font-size: 0.82rem; color: #718096; margin-bottom: 6px; }
     .progress-bar-bg { background: #edf2f7; border-radius: 99px; height: 10px; overflow: hidden; }
     .progress-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #f7971e, #ffd200); transition: width 0.5s cubic-bezier(.34,1.56,.64,1); }
-    .scenario { background: linear-gradient(135deg, #f7f8ff, #fffbea); border-left: 5px solid #f7971e; border-radius: 12px; padding: 18px 20px; font-size: 1.05rem; color: #2d3748; line-height: 1.7; margin-bottom: 20px; font-weight: 600; }
-    .choices { display: flex; flex-direction: column; gap: 10px; }
+    .scenario { background: linear-gradient(135deg, #f7f8ff, #fffbea); border-left: 5px solid #f7971e; border-radius: 12px; padding: 18px 20px; font-size: 1.05rem; color: #2d3748; line-height: 1.7; margin-bottom: 20px; font-weight: 600; min-height: 140px; }
+    .choices { display: flex; flex-direction: column; gap: 10px; min-height: 220px; }
     .choice-btn { border: 2.5px solid #e2e8f0; border-radius: 12px; padding: 14px 18px; cursor: pointer; text-align: left; background: #fff; transition: all 0.15s; width: 100%; font-size: 0.93rem; color: #2d3748; line-height: 1.5; font-family: inherit; }
     .choice-btn:not([disabled]):hover { border-color: #f7971e; background: #fffbea; transform: translateX(4px); }
     .choice-btn:focus { outline: none; }
-    .choice-btn.correct:focus, .choice-btn.reveal:focus { outline: 3px solid #38a169; outline-offset: 2px; }
     @media (hover: none) {
       .choice-btn { -webkit-tap-highlight-color: transparent; }
       .choice-btn:not([disabled]):hover { border-color: #e2e8f0; background: #fff; transform: none; }
-      .choice-btn:focus { box-shadow: none; background: inherit; border-color: inherit; }
-      .choice-btn.correct:focus, .choice-btn.reveal:focus { outline: 3px solid #38a169 !important; outline-offset: 2px; box-shadow: none; }
+      .choice-btn:focus { outline: none; box-shadow: none; }
     }
-    .choice-btn.correct { border-color: #38a169; background: linear-gradient(135deg, #f0fff4, #c6f6d5); animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1); display: flex; justify-content: space-between; align-items: center; }
+    .choice-btn.correct { border: 7px solid #38a169; background: linear-gradient(135deg, #f0fff4, #c6f6d5); animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1); display: flex; justify-content: space-between; align-items: center; }
     .choice-btn.correct .next-indicator { margin-left: 12px; flex-shrink: 0; }
     .choice-btn.wrong { border-color: #e53e3e; background: linear-gradient(135deg, #fff5f5, #fed7d7); animation: shake 0.4s ease; }
-    .choice-btn.reveal { border-color: #38a169; background: linear-gradient(135deg, #f0fff4, #c6f6d5); display: flex; justify-content: space-between; align-items: center; }
+    .choice-btn.reveal { border: 7px solid #38a169; background: linear-gradient(135deg, #f0fff4, #c6f6d5); display: flex; justify-content: space-between; align-items: center; }
     @keyframes popIn { 0% { transform: scale(0.95); } 60% { transform: scale(1.03); } 100% { transform: scale(1); } }
     @keyframes shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
     .feedback { margin-top: 16px; padding: 14px 18px; border-radius: 12px; font-size: 1rem; font-weight: 800; animation: slideDown 0.3s ease; min-height: 80px; display: flex; align-items: center; visibility: hidden; }
@@ -73,14 +71,14 @@
     .next-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(247,151,30,0.4); }
     .result-header { text-align: center; margin-bottom: 24px; }
     .result-header h1 { font-size: 1.6rem; font-weight: 800; color: #2d3748; }
-    .score-ring { width: 160px; height: 160px; border-radius: 50%; background: linear-gradient(135deg, #f7971e, #ffd200); display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 12px 40px rgba(247,151,30,0.4); animation: popIn 0.5s cubic-bezier(.34,1.56,.64,1); }
-    .score-num { font-size: 2.8rem; font-weight: 900; color: #2d3748; line-height: 1; }
-    .score-unit { font-size: 0.9rem; color: rgba(45,55,72,0.75); }
-    .score-area { text-align: center; margin: 28px 0; }
+    .score-ring { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #f7971e, #ffd200); display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 16px; box-shadow: 0 12px 40px rgba(247,151,30,0.4); animation: popIn 0.5s cubic-bezier(.34,1.56,.64,1); }
+    .score-num { font-size: 2.2rem; font-weight: 900; color: #2d3748; line-height: 1; }
+    .score-unit { font-size: 0.8rem; color: rgba(45,55,72,0.75); }
+    .score-area { text-align: center; margin: 16px 0; }
     .score-stars { font-size: 1.6rem; letter-spacing: 4px; margin-bottom: 8px; }
-    .score-msg { font-size: 1.15rem; font-weight: 700; color: #2d3748; margin-bottom: 6px; }
-    .best-msg { font-size: 0.9rem; color: #d69e2e; font-weight: 700; }
-    .result-list { border-top: 2px solid #edf2f7; margin-top: 24px; padding-top: 20px; }
+    .score-msg { font-size: 1rem; font-weight: 700; color: #2d3748; margin-bottom: 4px; }
+    .best-msg { font-size: 0.85rem; color: #d69e2e; font-weight: 700; }
+    .result-list { border-top: 2px solid #edf2f7; margin-top: 16px; padding-top: 16px; }
     .result-list h3 { font-size: 0.95rem; color: #718096; margin-bottom: 14px; font-weight: 700; }
     .answer-row { display: flex; align-items: flex-start; gap: 10px; padding: 12px 0; border-bottom: 1px solid #f7fafc; font-size: 0.84rem; }
     .q-num { min-width: 32px; font-weight: 800; color: #a0aec0; }
@@ -201,20 +199,12 @@ function launchConfetti(count = 60) {
 }
 
 // Test 1: SDLC Automation
-const TEST1 = {
-};
-
-
 let TESTS = [];
 const TOTAL_QUESTIONS = 60;
-
-let currentTest = null, currentQ = 0, answers = [], shuffledChoices = [];
 let currentLevel = 1;
 
 async function loadQuestions(level = 1) {
   try {
-    console.error("level")
-    console.error(level)
     const res = await fetch(`questions${level}.json`);
     const data = await res.json();
     TESTS = data.tests;
@@ -235,6 +225,8 @@ function switchLevel(level) {
   loadQuestions(level);
 }
 
+let currentTest = null, currentQ = 0, answers = [], shuffledChoices = [];
+
 function getBest(id) { return parseInt(localStorage.getItem(`best_${currentLevel}_${id}`) || '-1', 10); }
 function setBest(id, s) { if (s > getBest(id)) localStorage.setItem(`best_${currentLevel}_${id}`, s); }
 function resetScores() {
@@ -250,24 +242,6 @@ function getTotalCorrect() {
     if (best >= 0) { total += Math.round(best / 100 * 10); attempted++; }
   });
   return { total, attempted };
-}
-
-function launchConfetti(count = 60) {
-  const wrap = document.getElementById('confetti-wrap');
-  wrap.innerHTML = '';
-  const colors = ['#f7971e','#ffd200','#21d4fd','#b721ff','#0f2027','#38a169','#f5576c'];
-  for (let i = 0; i < count; i++) {
-    const el = document.createElement('div');
-    el.className = 'confetti-piece';
-    el.style.left = Math.random() * 100 + 'vw';
-    el.style.background = colors[Math.floor(Math.random() * colors.length)];
-    el.style.animationDuration = (1.5 + Math.random() * 2) + 's';
-    el.style.animationDelay = (Math.random() * 0.8) + 's';
-    el.style.width = el.style.height = (6 + Math.random() * 8) + 'px';
-    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-    wrap.appendChild(el);
-    el.addEventListener('animationend', () => el.remove());
-  }
 }
 
 function showHome() {
@@ -300,7 +274,7 @@ function showHome() {
             (navigator.maxTouchPoints > 0) ||
             (navigator.msMaxTouchPoints > 0));
   };
-  const buildTime = '2026-05-06 04:13:04';
+  const buildTime = '2026-05-06 04:36:41';
   const debugEl = document.createElement('div');
   debugEl.style.cssText = 'position:fixed;bottom:8px;left:8px;font-size:0.65rem;color:#999;background:rgba(0,0,0,0.1);padding:4px 8px;border-radius:4px;z-index:1000;line-height:1.3;';
   debugEl.innerHTML = (isTouchDevice() ? '📱 Touch' : '🖥️ PC') + '<br>' + buildTime;
@@ -340,16 +314,22 @@ function renderQuestion() {
   document.getElementById('progress-pct').textContent   = pct + '%';
   document.getElementById('scenario').textContent       = q.scenario;
   document.getElementById('feedback').className         = 'feedback';
+  document.getElementById('feedback').textContent       = '';
   document.getElementById('explanation').className      = 'explanation';
+  document.getElementById('explanation').textContent    = '';
   document.getElementById('next-btn').style.display     = 'none';
+
+  const choicesEl = document.getElementById('choices');
+  choicesEl.innerHTML = ''; // 前の問題の状態をクリア
 
   const indexed = shuffle(q.choices.map((c, i) => ({ choice: c, origIdx: i })));
   shuffledChoices = indexed;
   const correctShuffledIdx = indexed.findIndex(x => x.origIdx === q.correct);
 
-  document.getElementById('choices').innerHTML = indexed.map((item, i) =>
-    `<button class="choice-btn" onclick="answer(${i},${correctShuffledIdx})" id="choice-${i}">${item.choice}</button>`
-  ).join('');
+  choicesEl.innerHTML = indexed.map((item, i) => {
+    const label = String.fromCharCode(97 + i); // a, b, c, d
+    return `<button class="choice-btn" onclick="answer(${i},${correctShuffledIdx})" id="choice-${i}">${label}. ${item.choice}</button>`;
+  }).join('');
 }
 
 function answer(idx, correctIdx) {
@@ -367,7 +347,6 @@ function answer(idx, correctIdx) {
     ansBtn.innerHTML = `<span>${ansBtn.textContent}</span><span class="next-indicator">${nextLabel}</span>`;
     ansBtn.disabled = false;
     ansBtn.onclick = goNext;
-    ansBtn.focus();
   }
   const correctBtn = document.getElementById(`choice-${correctIdx}`);
   if (!ok) {
