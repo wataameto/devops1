@@ -320,11 +320,14 @@ async function loadQuestions(level = 1) {
   try {
     const res = await fetch(`questions${level}.json`);
     const data = await res.json();
+    if (!data.tests || !Array.isArray(data.tests)) {
+      throw new Error('Invalid JSON structure: tests is not an array');
+    }
     TESTS = data.tests;
     showHome();
   } catch (e) {
     console.error('Failed to load questions:', e);
-    document.body.innerHTML = '<p style="padding:40px;text-align:center;color:#e53e3e;">問題ファイルの読み込みに失敗しました</p>';
+    document.body.innerHTML = '<p style="padding:40px;text-align:center;color:#e53e3e;">問題ファイルの読み込みに失敗しました: ' + e.message + '</p>';
   }
 }
 
@@ -348,6 +351,10 @@ function resetScores() {
 
 function getTotalCorrect() {
   let total = 0, attempted = 0;
+  if (!Array.isArray(TESTS)) {
+    console.warn('TESTS is not an array:', TESTS);
+    return { total: 0, attempted: 0 };
+  }
   TESTS.forEach(t => {
     const best = getBest(t.id);
     if (best >= 0) { total += Math.round(best / 100 * 10); attempted++; }
