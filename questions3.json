@@ -72,7 +72,7 @@
             "SNS トピックを中央アカウントと共有する。"
           ],
           "correct": 0,
-          "explanation": "Systems Manager OpsCenter で運用上の問題（OpsItems）を一元管理・解決します。Patch Manager はパッチ適用です。"
+          "explanation": "EventBridge ではクロスアカウント連携が可能です。送信側アカウントで EventBridge ルールを作成し、ターゲットとして別アカウントの EventBus を指定します。その際、リソースベースポリシーで権限を許可する必要があります。"
         },
         {
           "scenario": "CloudFormation で、DB スタックの出力値（Endpoint等）を、他のアプリ用スタックで動的に参照したい。最も標準的な方法は？",
@@ -515,7 +515,7 @@
             "Route 53 を切り替える。"
           ],
           "correct": 0,
-          "explanation": "Systems Manager OpsCenter で運用問題を一元管理・解決します。パッチは Patch Manager です。"
+          "explanation": "AppConfig はデプロイ中にエラーが検出された場合、自動ロールバック機能で前の設定に戻せます。ガード レール機能で設定の正合性チェック、本番適用前の検証が可能です。"
         },
         {
           "scenario": "CloudFormation の `Condition` セクションを使用して、「本番環境の時だけ RDS を作成する」ロジックを実装したい。必要な関数は？",
