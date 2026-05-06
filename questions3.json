@@ -17,7 +17,7 @@
             "CloudTrail のイベントを監視し、エラー率が上昇したらスタックを削除する。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "CodeDeploy のアラーム監視機能で CloudWatch アラームを監視し、異常時に自動ロールバックをトリガーできます。Lambda ポーリングより管理が簡潔で、Route 53 DNS 切り替えは別戦略です。"
         },
         {
           "scenario": "CloudFormation StackSets を使用して 100 近くのアカウントにデプロイする際、一部のアカウントで失敗しても全体を止めずに進めたい。調整すべきパラメータは？",
@@ -28,7 +28,7 @@
             "RegionConcurrencyType"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "StackSets で FailureToleranceCount または FailureTolerancePercentage を設定すれば、一部失敗時も全体は進みます。MaxConcurrentCount は並列度、RetainStacksOnAccountRemoval はアカウント削除時の動作です。"
         },
         {
           "scenario": "AWS Organizations 内のすべてのアカウントで、パブリック S3 バケットの作成を「遡及的に」検出し、自動で非公開にする構成は？",
@@ -39,7 +39,7 @@
             "S3 バケットポリシーで一律拒否する。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "AWS Config の組織ルール + SSM Automation 修復で、遡及的にパブリック S3 を検出し自動非公開化できます。SCP は予防的、Lambda は遅延の可能性があります。"
         },
         {
           "scenario": "CodePipeline で、ソースコードの変更が反映される前に、外部の脆弱性スキャンツール（API 経由）を完了させたい。最適なアクションタイプは？",
@@ -50,7 +50,7 @@
             "S3 のイベント通知を利用する。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "CodePipeline で外部 API スキャンを完了させるには、カスタムアクション または Lambda アクションで API 呼び出し・結果待機ができます。承認アクションは手動確認向けです。"
         },
         {
           "scenario": "Systems Manager パッチマネージャーで、特定の「Webサーバー群」にだけ異なるスケジュールでパッチを当てたい。どう識別すべきか？",
@@ -61,7 +61,7 @@
             "IAM ロール名でフィルタリングする。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Systems Manager パッチグループを使い、リソースタグで Webサーバー群を識別し、異なるスケジュール適用ができます。"
         },
         {
           "scenario": "Amazon EventBridge で、複数アカウントのイベントを中央のセキュリティアカウントに集約したい。送信側アカウントで必要な設定は？",
@@ -72,7 +72,7 @@
             "SNS トピックを中央アカウントと共有する。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Systems Manager OpsCenter で運用上の問題（OpsItems）を一元管理・解決します。Patch Manager はパッチ適用です。"
         },
         {
           "scenario": "CloudFormation で、DB スタックの出力値（Endpoint等）を、他のアプリ用スタックで動的に参照したい。最も標準的な方法は？",
@@ -83,7 +83,7 @@
             "S3 に設定ファイルを書き出し、それを読み込む。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "SNS はパブリッシュ・サブスクライブ型通知、SQS はキューイングで用途が異なります。組み合わせて使う SNS→SQS パターンもあります。"
         },
         {
           "scenario": "AWS Control Tower を導入した環境で、新しいアカウントが作成された際に自動的に特定のセキュリティリソースをプロビジョニングする仕組みは？",
@@ -94,7 +94,7 @@
             "CloudFormation を手動で 1 つずつ実行する。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Lambda トリガーには S3 PutObject、SQS メッセージ、CloudWatch Events など多数があります。EC2 起動のみではありません。"
         },
         {
           "scenario": "Amazon GuardDuty で「EC2 が異常なドメインに通信している」という警告が出た。これを自動で隔離（セキュリティグループ変更）するためのフローは？",
@@ -105,7 +105,7 @@
             "IAM ポリシーでの制限のみ"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "CloudWatch Alarms が SNS・Lambda に連携すれば、監視条件で自動アクション（自己修復など）が実行できます。"
         },
         {
           "scenario": "Amazon Inspector が、特定の EC2 インスタンスでスキャンを実行できていない。まず確認すべき項目は？",
@@ -116,7 +116,7 @@
             "VPC エンドポイントが作成されているか。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Secrets Manager の自動ローテーション機能で、定期的に機密情報（DB パスワードなど）を安全に更新・管理できます。"
         }
       ]
     },
@@ -136,7 +136,7 @@
             "スキーマ変更が終わるまでアプリを起動しない。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "ゲームデイ演習は意図的に障害を起こしてシステムの回復力を検証し、本番前に問題を発見できます。"
         },
         {
           "scenario": "AWS Config で、リソースの設定変更が「誰によって」行われたかを特定するために連携が必要なサービスは？",
@@ -147,7 +147,7 @@
             "Amazon CloudWatch"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "最小権限の原則で必要最低限の権限だけ付与し、セキュリティリスクを最小化します。"
         },
         {
           "scenario": "CodePipeline で、承認者が詳細を確認できるように、外部ドキュメントへのリンクを表示させる機能は？",
@@ -158,7 +158,7 @@
             "CodeCommit のコメント機能を使う。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "IAM Roles は一時認証（STS で自動更新）、Users は長期アクセスキーで、Roles の方がセキュアです。"
         },
         {
           "scenario": "AWS Systems Manager の「ステートマネージャー」を使用して、全 EC2 に特定のソフトウェアが常にインストールされている状態（あるべき姿）を維持したい。使用するドキュメントは？",
@@ -169,7 +169,7 @@
             "AWS-CopySnapshot"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Secrets Manager は機密情報を安全に保存・自動ローテーションでき、Parameter Store より管理機能が充実しています。"
         },
         {
           "scenario": "Auto Scaling グループで、スケールイン時に特定の「計算処理中のインスタンス」が削除されるのを防ぐための設定は？",
@@ -180,7 +180,7 @@
             "ライフサイクルフックで 1 時間待機させる。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "AWS Shield は DDoS 攻撃対策、WAF はアプリ層攻撃（SQLi・XSS）防止で役割が異なります。"
         },
         {
           "scenario": "CloudWatch Logs Insights で、ステータスコードが 500 系のログだけを抽出して集計するクエリのキーワードは？",
@@ -191,7 +191,7 @@
             "search 'ERROR' | summarize"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "CloudTrail の『すべてのリージョンに適用』オプションで、全リージョンのイベント一括記録ができます。"
         },
         {
           "scenario": "CodeBuild でビルドした Docker イメージを ECR にプッシュする際、`access denied` エラーが出た。ビルド環境が使用しているのはどの権限？",
@@ -202,7 +202,7 @@
             "buildspec.yml 内に記載したアクセスキー"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Inspector は脆弱性スキャン、GuardDuty は脅威検出で、合わせて包括的なセキュリティを実現します。"
         },
         {
           "scenario": "AWS X-Ray を使用して、マイクロサービスのレイテンシー（遅延）が「DB 呼び出し」に起因しているか調査したい。確認すべきデータ単位は？",
@@ -213,7 +213,7 @@
             "サンプリングルール (Sampling Rules)"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "WAF で IP・SQLi・XSS パターンをブロック可能です。CPU スケーリングやポリシーは WAF スコープ外です。"
         },
         {
           "scenario": "複数のアカウント間で共通の AMI を安全に共有し、かつパッチ適用済みの最新版を常に使いやすくするサービスは？",
@@ -224,7 +224,7 @@
             "IAM グループでの共有"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Organizations SCP で上位階層のサービス・操作を制限でき、IAM より強力です。SCP 拒否なら IAM 許可も無効です。"
         },
         {
           "scenario": "AWS Organizations で、開発用 OU（組織単位）には全ての操作を許可しつつ、本番用 OU には特定のサービス（例: ゲーム等）の使用を禁止したい。適用するポリシーは？",
@@ -235,7 +235,7 @@
             "AWS Config で禁止サービスを削除する。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "ブロックパブリックアクセス設定で、意図しない S3 パブリックアクセスを一括防止できます。IAM や CloudFront では完全には防げません。"
         }
       ]
     },
@@ -255,7 +255,7 @@
             "OnFailure: DELETE"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "RTO は復旧までの許容時間、RPO は許容データ損失量で、ディザスタリカバリ設計の基本です。"
         },
         {
           "scenario": "Amazon EventBridge を使用して API Gateway の呼び出し回数が異常な場合にアラートを出したい。どのメトリクスを使用すべきか？",
@@ -266,7 +266,7 @@
             "Lambda の Duration"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "マルチAZ は同一リージョン内、マルチリージョンは広域災害対策で、目的に応じて使い分けます。"
         },
         {
           "scenario": "CodeDeploy の AppSpec ファイルで、スクリプトを実行する際の「実行ユーザー（Runas）」を指定できるセクションは？",
@@ -277,7 +277,7 @@
             "files セクション"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Route 53 フェイルオーバールーティングでプライマリ障害時に自動セカンダリ切り替えできます。"
         },
         {
           "scenario": "Amazon S3 で数百万のオブジェクトがある。特定のタグが付いていないオブジェクトの一覧を最も効率的に取得する方法は？",
@@ -288,7 +288,7 @@
             "S3 ストレージレンズを確認するのみ。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "RDS マルチAZ はスタンバイ自動フェイルオーバー、Read Replica は読み取りスケールで用途が異なります。"
         },
         {
           "scenario": "CodePipeline で、ビルド成功後に「ステージング環境」へデプロイし、テストが成功したら「本番環境」へ自動で進むようにしたい。構成要素は？",
@@ -299,7 +299,7 @@
             "CloudFormation の WaitCondition を使う。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "ターゲット追跡スケーリングでメトリクス目標値を自動調整し、スケーリングを最適化できます。"
         },
         {
           "scenario": "AWS Systems Manager Automation ドキュメント内で、前のステップの出力を次のステップの入力として使うための参照形式は？",
@@ -310,7 +310,7 @@
             "!GetAtt PreviousStep.Output"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "CloudFront オリジンフェイルオーバーでプライマリ障害時に自動セカンダリ切り替えできます。"
         },
         {
           "scenario": "Kinesis Data Streams で「データが処理しきれず滞留している」ことを検知するための CloudWatch メトリクスは？",
@@ -321,7 +321,7 @@
             "ReadProvisionedThroughputExceeded"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "S3 は 99.999999999%（イレブンナイン）の耐久性で、自動複製による保護です。"
         },
         {
           "scenario": "AWS OpsWorks で、新しいインスタンスがレイヤーに追加された際に、既存の他のインスタンスの設定（例: ロードバランサーの参照先など）を自動更新するライフサイクルイベントは？",
@@ -332,7 +332,7 @@
             "Sync イベント"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "ELB ヘルスチェックで不正常なターゲットへの送信を停止し、高可用性を維持します。"
         },
         {
           "scenario": "IAM Access Analyzer が分析するのはどの種類のリソース共有設定ですか？",
@@ -343,7 +343,7 @@
             "VPC のルートテーブル"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "SQS で非同期キューイング・再処理、DLQ で失敗メッセージ分離により障害耐性を高めます。"
         },
         {
           "scenario": "Elastic Beanstalk で「トラフィック分割 (Traffic Splitting) デプロイ」を使用する主な利点は？",
@@ -354,7 +354,7 @@
             "インスタンス数を半分に減らせる。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "ゲームデイ演習で意図的障害テスト → 回復力検証で、本番のリスク低減ができます。"
         }
       ]
     },
@@ -374,7 +374,7 @@
             "ログインサイトクエリ"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "CloudWatch はメトリクス収集・アラーム・ログ管理の統合監視サービスです。"
         },
         {
           "scenario": "AWS Step Functions で、外部システムの処理待ちなどで数日間ワークフローを停止させ、外部からの合図で再開させるための機能は？",
@@ -385,7 +385,7 @@
             "SQS の可視性タイムアウトを長くする。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "X-Ray は分散アプリのリクエストをトレース・分析し、ボトルネック可視化ができます。"
         },
         {
           "scenario": "AWS CodeDeploy を使用して EC2 にデプロイする際、過去の成功したデプロイアーティファクトをどこに保存しておく必要があるか？",
@@ -396,7 +396,7 @@
             "Systems Manager パラメータストア"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "CloudWatch Alarms が ALARM → SNS/Lambda トリガーで自動対応（自己修復など）が実現できます。"
         },
         {
           "scenario": "CloudFormation のスタック更新で「リソースの置換 (Replacement)」が発生する場合、データの損失を防ぐために確認すべき項目は？",
@@ -407,7 +407,7 @@
             "スタックを一度削除してから作り直す。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "EventBridge でサービス間のイベント駆動連携や cron スケジュール実行ができます。"
         },
         {
           "scenario": "AWS Trusted Advisor で、公開設定になっている S3 バケットを特定できるカテゴリは？",
@@ -418,7 +418,7 @@
             "サービス制限"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "CloudTrail は『誰が・いつ・何を』の API 監査証跡。CloudWatch はメトリクス監視で用途が異なります。"
         },
         {
           "scenario": "CloudWatch アラームで、複数の異なるアラーム（例: CPU > 80% かつ エラー率 > 5%）が同時に発生した時にだけ通知したい場合に使用する機能は？",
@@ -429,7 +429,7 @@
             "Lambda フィルター"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "CloudWatch Logs Insights でクエリ言語による高速ログ検索・分析ができます。"
         },
         {
           "scenario": "Systems Manager Run Command で、多数のインスタンスに対して実行速度（同時実行数）を制御し、エラー率が一定を超えたら停止させたい。設定するパラメータは？",
@@ -440,7 +440,7 @@
             "BatchSize と StopCondition"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "GuardDuty は脅威インテリジェンスでVPC フロー・DNS ログを分析。Inspector は脆弱性スキャンです。"
         },
         {
           "scenario": "AWS Secrets Manager で「ローテーション中に DB への接続ができなくなる時間」を最小限にするための推奨構成は？",
@@ -451,7 +451,7 @@
             "暗号化を一時的に無効にする。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Composite Alarms で複数アラーム AND/OR 条件を組み合わせ、複雑な監視条件を実現できます。"
         },
         {
           "scenario": "Amazon S3 バケットのアクセスログを分析するために、ログの出力先 S3 バケットからデータを取得してクエリを投げられるサービスは？",
@@ -462,7 +462,7 @@
             "Amazon CloudWatch Logs"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "CloudWatch カスタムメトリクスは最短 1 秒粒度で発行可能です。"
         },
         {
           "scenario": "CodePipeline で、パイプラインの実行が失敗した理由を SNS で通知したい。EventBridge のイベントパターンでフィルタリングすべき「detail.state」の値は？",
@@ -473,7 +473,7 @@
             "FAILURE"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Health Dashboard で AWS 障害・メンテナンスのうち自分のリソース影響情報を確認できます。"
         }
       ]
     },
@@ -493,7 +493,7 @@
             "API Gateway のルート設定"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "EventBridge でサービス間イベント駆動連携ができます。ログ保存や計算ではありません。"
         },
         {
           "scenario": "Amazon EC2 Auto Scaling の「予測スケーリング (Predictive Scaling)」が基づいているデータは？",
@@ -504,7 +504,7 @@
             "S3 のアクセスログ"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "SNS はプッシュ型メッセージング・通知。SQS はプル型キューイングで、用途が異なります。"
         },
         {
           "scenario": "AWS AppConfig で、設定の適用中にエラーが発生した場合に自動で前の設定に戻すための仕組みは？",
@@ -515,7 +515,7 @@
             "Route 53 を切り替える。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Systems Manager OpsCenter で運用問題を一元管理・解決します。パッチは Patch Manager です。"
         },
         {
           "scenario": "CloudFormation の `Condition` セクションを使用して、「本番環境の時だけ RDS を作成する」ロジックを実装したい。必要な関数は？",
@@ -526,7 +526,7 @@
             "Fn::Join"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Systems Manager Automation でワークフロー化・自動化ができます。"
         },
         {
           "scenario": "AWS Artifact の主な役割は？",
@@ -537,7 +537,7 @@
             "Docker イメージを管理する。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "SNS は通知（プッシュ）、SQS はキューイング（プル）で、組み合わせた SNS→SQS パターンもあります。"
         },
         {
           "scenario": "AWS Organizations で、既存のアカウントを組織に招待した際、そのアカウントに対して SCP が適用されるタイミングは？",
@@ -548,7 +548,7 @@
             "手動で有効化した時のみ"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Lambda トリガーは S3、SQS、CloudWatch Events など多数対応です。"
         },
         {
           "scenario": "CloudWatch の「メトリクス数式 (Metric Math)」を使用して何ができますか？",
@@ -559,7 +559,7 @@
             "EC2 のパスワードを変更する。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "CloudWatch Alarms を SNS・Lambda に連携させれば、監視条件で自動対応できます。"
         },
         {
           "scenario": "AWS Systems Manager の「パッチグループ」を定義するために、EC2 インスタンスに付与する必要があるタグキーの名前は？",
@@ -570,7 +570,7 @@
             "MaintenanceWindow"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Secrets Manager の自動ローテーション機能で機密情報を定期更新・管理できます。"
         },
         {
           "scenario": "AWS CloudMap と Amazon ECS を連携させた「サービス検出」で、コンテナの IP アドレスが変更された際に自動更新される DNS レコードの種類は？",
@@ -581,7 +581,7 @@
             "MX レコード"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "SNS トピックのアクセスは リソースベースポリシーで制御できます。"
         },
         {
           "scenario": "AWS CodeDeploy の `ValidateService` ライフサイクルイベントの目的は？",
@@ -592,7 +592,7 @@
             "旧環境のインスタンスを削除する。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Lambda 最大実行時間は 15 分。長時間実行は Step Functions や EC2 を使います。"
         }
       ]
     },
@@ -612,7 +612,7 @@
             "KMS 暗号化"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "最小権限の原則で必要最低限権限のみ付与し、セキュリティリスクを最小化します。"
         },
         {
           "scenario": "AWS Resource Access Manager (RAM) を使用して、組織内の別アカウントと共有「できない」リソースは？",
@@ -623,7 +623,7 @@
             "License Manager 設定"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "IAM Roles は一時認証（STS 自動更新）で安全、Users は長期キーで Roles の方がセキュアです。"
         },
         {
           "scenario": "CloudWatch Logs の「エクスポートタスク」で S3 にログを送る際、ログデータが表示されない原因として多いのは？",
@@ -634,7 +634,7 @@
             "VPC エンドポイントがない。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Secrets Manager は組み込みローテーション機能で機密情報を安全に管理します。"
         },
         {
           "scenario": "AWS Systems Manager の「高速セットアップ (Quick Setup)」で自動化できる運用タスクは？",
@@ -645,7 +645,7 @@
             "S3 の静的サイト公開"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "AWS Shield は DDoS 対策、WAF はアプリ層（SQLi・XSS）攻撃防止です。"
         },
         {
           "scenario": "Amazon EventBridge の「デッドレターキュー (DLQ)」の役割は？",
@@ -656,7 +656,7 @@
             "不要なイベントを即座に破棄する。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "CloudTrail で『すべてのリージョンに適用』すれば、全リージョン API 監査ができます。"
         },
         {
           "scenario": "Elastic Beanstalk で「環境のマニフェスト (env.yaml)」を使用する目的は？",
@@ -667,7 +667,7 @@
             "IAM ユーザーを追加する。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Inspector は脆弱性スキャン、GuardDuty は脅威検出で、 合わせて包括防御ができます。"
         },
         {
           "scenario": "AWS CodePipeline で、パイプライン自身の構成変更（アクションの追加など）を自動検知して実行させるには？",
@@ -678,7 +678,7 @@
             "S3 のバージョニングを使う。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "WAF で IP・SQLi・XSS パターンをブロック可能です。スケーリング制限はWAF 外です。"
         },
         {
           "scenario": "AWS Config 組織ルールをデプロイする際、一部のアカウントを除外（Exclude）するための設定場所は？",
@@ -689,7 +689,7 @@
             "VPC のルートテーブル"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "SCP（Organizations）で上位階層のサービス・操作を制限。IAM より強力で、SCP 拒否なら IAM 許可も無効です。"
         },
         {
           "scenario": "Amazon CloudWatch で、特定のログが 5 分間に 10 回以上出たらアラームを出す設定は？",
@@ -700,7 +700,7 @@
             "ロググループの保持期間を短くする。"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "ブロックパブリックアクセス設定で意図しない S3 パブリックアクセスを一括防止できます。"
         },
         {
           "scenario": "AWS Support API を使用して自動化できることは？",
@@ -711,7 +711,7 @@
             "利用料金の支払い日の変更"
           ],
           "correct": 0,
-          "explanation": null
+          "explanation": "Security Hub で GuardDuty・Inspector 等の検出結果を一元管理できます。"
         }
       ]
     }
