@@ -205,7 +205,7 @@ let currentLevel = 1;
 
 async function loadQuestions(level = 1) {
   try {
-    const res = await fetch(`questions${level}.json`);
+    const res = await fetch(`questions${level}.json?t=${Date.now()}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     console.log('Loaded data:', data);
