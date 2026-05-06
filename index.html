@@ -56,9 +56,11 @@
       .choice-btn:focus { outline: none; box-shadow: none; }
     }
     .choice-btn.correct { border: 7px solid #38a169; background: linear-gradient(135deg, #f0fff4, #c6f6d5); animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1); display: flex; justify-content: space-between; align-items: center; }
+    .choice-btn.correct:hover { border-color: #38a169; background: linear-gradient(135deg, #f0fff4, #c6f6d5); transform: none; }
     .choice-btn.correct .next-indicator { margin-left: 12px; flex-shrink: 0; }
     .choice-btn.wrong { border-color: #e53e3e; background: linear-gradient(135deg, #fff5f5, #fed7d7); animation: shake 0.4s ease; }
     .choice-btn.reveal { border: 7px solid #38a169; background: linear-gradient(135deg, #f0fff4, #c6f6d5); display: flex; justify-content: space-between; align-items: center; }
+    .choice-btn.reveal:hover { border-color: #38a169; background: linear-gradient(135deg, #f0fff4, #c6f6d5); transform: none; }
     @keyframes popIn { 0% { transform: scale(0.95); } 60% { transform: scale(1.03); } 100% { transform: scale(1); } }
     @keyframes shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
     .feedback { margin-top: 16px; padding: 14px 18px; border-radius: 12px; font-size: 1rem; font-weight: 800; animation: slideDown 0.3s ease; min-height: 80px; display: flex; align-items: center; visibility: hidden; }
