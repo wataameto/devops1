@@ -301,7 +301,7 @@ function showHome() {
             (navigator.maxTouchPoints > 0) ||
             (navigator.msMaxTouchPoints > 0));
   };
-  const buildTime = '2026-05-06 10:25:30';
+  const buildTime = '2026-05-06 10:35:00';
   const debugEl = document.createElement('div');
   debugEl.style.cssText = 'position:fixed;bottom:8px;left:8px;font-size:0.65rem;color:#999;background:rgba(0,0,0,0.1);padding:4px 8px;border-radius:4px;z-index:1000;line-height:1.3;';
   debugEl.innerHTML = (isTouchDevice() ? '📱 Touch' : '🖥️ PC') + '<br>' + buildTime;
@@ -356,8 +356,16 @@ function renderQuestion() {
 
   choicesEl.innerHTML = indexed.map((item, i) => {
     const label = String.fromCharCode(97 + i); // a, b, c, d
-    return `<button class="choice-btn" onclick="answer(${i},${correctShuffledIdx})" id="choice-${i}">${label}. ${item.choice}</button>`;
+    return `<button class="choice-btn" onclick="answer(${i},${correctShuffledIdx})" id="choice-${i}" disabled>${label}. ${item.choice}</button>`;
   }).join('');
+
+  // 問題表示後 0.5秒はクリック受け付けない
+  setTimeout(() => {
+    shuffledChoices.forEach((_, i) => {
+      const btn = document.getElementById(`choice-${i}`);
+      if (btn) btn.disabled = false;
+    });
+  }, 500);
 }
 
 let answerInProgress = false;
@@ -382,17 +390,19 @@ function answer(idx, correctIdx) {
   const nextLabel = isLast ? '→ 結果を見る' : '→ 次の問題';
   if (ok) {
     ansBtn.innerHTML = `<span>${ansBtn.textContent}</span><span class="next-indicator">${nextLabel}</span>`;
-    ansBtn.disabled = false;
     ansBtn.onclick = goNext;
-    ansBtn.onkeydown = goNext; // Enter キー対策
+    ansBtn.onkeydown = goNext;
+    // 答え合わせ表示後 0.5秒はクリック受け付けない
+    setTimeout(() => { ansBtn.disabled = false; }, 500);
   }
   const correctBtn = document.getElementById(`choice-${correctIdx}`);
   if (!ok) {
     correctBtn.classList.add('reveal');
-    correctBtn.disabled = false;
     correctBtn.innerHTML = `<span>${correctBtn.textContent}</span><span class="next-indicator">${nextLabel}</span>`;
     correctBtn.onclick = goNext;
-    correctBtn.onkeydown = goNext; // Enter キー対策
+    correctBtn.onkeydown = goNext;
+    // 答え合わせ表示後 0.5秒はクリック受け付けない
+    setTimeout(() => { correctBtn.disabled = false; }, 500);
   }
 
   const fb = document.getElementById('feedback');
