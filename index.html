@@ -316,6 +316,8 @@ let currentLevel = 1;
 
 async function loadQuestions(level = 1) {
   try {
+    console.error("level")
+    console.error(level)
     const res = await fetch(`questions${level}.json`);
     const data = await res.json();
     TESTS = data.tests;
