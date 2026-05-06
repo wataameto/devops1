@@ -180,7 +180,7 @@
             "ライフサイクルフックで 1 時間待機させる。"
           ],
           "correct": 0,
-          "explanation": "AWS Shield は DDoS 攻撃対策、WAF はアプリ層攻撃（SQLi・XSS）防止で役割が異なります。"
+          "explanation": "スケールイン保護を有効にすると、Auto Scaling グループのスケールイン時にそのインスタンスが削除対象から外れます。処理中のジョブを安全に完了させることができます。"
         },
         {
           "scenario": "CloudWatch Logs Insights で、ステータスコードが 500 系のログだけを抽出して集計するクエリのキーワードは？",
@@ -645,7 +645,7 @@
             "S3 の静的サイト公開"
           ],
           "correct": 0,
-          "explanation": "AWS Shield は DDoS 対策、WAF はアプリ層（SQLi・XSS）攻撃防止です。"
+          "explanation": "Systems Manager の Quick Setup は、パッチ適用スキャン、インベントリ収集、CloudWatch エージェントの設定・更新など、代表的な運用タスクをウィザード形式で素早く自動化できます。"
         },
         {
           "scenario": "Amazon EventBridge の「デッドレターキュー (DLQ)」の役割は？",
