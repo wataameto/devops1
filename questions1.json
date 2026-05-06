@@ -39,7 +39,7 @@
             "一部ユーザーに新バージョンをテストする手法"
           ],
           "correct": 0,
-          "explanation": "ブルー（現行）とグリーン（新規）の2環境を用意して瞬時に切り替える。段階的更新はローリング、全同時更新は All-at-once、一部ユーザーへの試験はカナリアデプロイ。"
+          "explanation": "ブルー（現行）とグリーン（新規）の2環境を用意して、ロードバランサーやRoute 53で瞬時にトラフィックを切り替える。ダウンタイムゼロでロールバックも容易。段階的更新はローリング、全同時更新は All-at-once、一部ユーザーへの試験はカナリアデプロイ。"
         },
         {
           "scenario": "🐦 カナリアデプロイの特徴は？",
@@ -61,7 +61,7 @@
             "taskdef.json"
           ],
           "correct": 0,
-          "explanation": "appspec.yml は CodeDeploy のデプロイ手順定義ファイル。buildspec.yml は CodeBuild のビルド手順、template.yaml は CloudFormation のインフラ定義、taskdef.json は ECS タスク定義に使う。"
+          "explanation": "appspec.yml は CodeDeploy のデプロイ手順定義ファイル。version、Resources（アーティファクト配置先）、Hooks（BeforeInstall・AfterInstall などのライフサイクル）、Permissions・Properties を記述。buildspec.yml は CodeBuild ビルド手順、template.yaml は CloudFormation インフラ定義、taskdef.json は ECS タスク定義に使用。"
         },
         {
           "scenario": "📄 CodeBuild でビルド手順を定義するファイルは？",
@@ -72,7 +72,7 @@
             "deploy.yaml"
           ],
           "correct": 0,
-          "explanation": "buildspec.yml は install → pre_build → build → post_build の4フェーズで構成。各フェーズ失敗で以降は実行されない。appspec.yml は CodeDeploy 用、Dockerfile はコンテナイメージ定義。"
+          "explanation": "buildspec.yml は install（依存ライブラリ）→ pre_build（テスト前処理）→ build（コンパイル）→ post_build（テスト、アーティファクト作成）の 4 フェーズで構成。各フェーズで失敗するとそれ以降は実行されない。artifacts セクションでビルド成果物を S3 に保存可能。appspec.yml は CodeDeploy 用、Dockerfile はコンテナイメージ定義。"
         },
         {
           "scenario": "🗄️ CodePipeline のステージ間でアーティファクトを保存するサービスは？",
@@ -105,7 +105,7 @@
             "エラーを自動修正する"
           ],
           "correct": 0,
-          "explanation": "手動承認は本番デプロイ前のゲートとして使われる。SNS で担当者に通知が届き、承認または拒否を選択する。タイムアウト（デフォルト7日）で自動拒否も可能。"
+          "explanation": "手動承認はパイプラインの特定ステージ（通常は本番デプロイ前）をゲートするアクション。SNS で承認者に通知が届き、AWS CodePipeline コンソールまたは SNS メッセージから承認/拒否を選択。タイムアウト（デフォルト 7 日）に達すると自動拒否される。承認コメントの追加も可能で、ロールバック時に参照できる。"
         },
         {
           "scenario": "🌿 GitOps の基本的な考え方は？",
@@ -158,7 +158,7 @@
             "S3 のアクセスを制限する"
           ],
           "correct": 0,
-          "explanation": "Systems Manager Parameter Store は DB 接続文字列・API キーなどの設定値を階層的に管理する。無料の Standard と有料の Advanced がある。自動ローテーションが必要なら Secrets Manager が適切。"
+          "explanation": "Systems Manager Parameter Store は DB 接続文字列・API キー・機密設定値などを /myapp/db/password のような階層的なパス構造で管理し、IAM で細粒度アクセス制御できる。無料の Standard と有料の Advanced がある。特に定期的な自動ローテーション（RDS パスワードなど）が必要な場合は Secrets Manager が適切。"
         },
         {
           "scenario": "⚙️ AWS OpsWorks の説明として正しいのは？",
@@ -180,7 +180,7 @@
             "Metadata"
           ],
           "correct": 0,
-          "explanation": "出力スタックで Outputs にエクスポート名を設定し、参照スタックで Fn::ImportValue で取得する。Mappings は環境ごとのマッピングテーブル、Conditions は条件付きリソース作成、Metadata は追加情報。"
+          "explanation": "Outputs セクションで Export 属性を使ってエクスポート名を指定し、別スタックで Fn::ImportValue で参照する。例：Outputs: { VpcId: { Value: !Ref MyVpc, Export: { Name: MyVpcId } } }。削除時は参照スタックが先に削除される必要がある。Mappings はマッピングテーブル、Conditions は条件付きリソース、Metadata はメタ情報。"
         },
         {
           "scenario": "📋 AWS Config の主な目的は？",
@@ -202,7 +202,7 @@
             "バージョン管理ツール"
           ],
           "correct": 0,
-          "explanation": "Terraform は HashiCorp 製の IaC ツール。AWS・Azure・GCP などマルチクラウドに対応し、HCL で記述する。State ファイルで現状を管理する点が CloudFormation との違い。"
+          "explanation": "Terraform は HashiCorp 製のオープンソース IaC ツール。HCL（HashiCorp Configuration Language）で記述し、AWS・Azure・GCP・オンプレミスなどマルチクラウド対応。State ファイル（terraform.tfstate）で現状を追跡し、plan（差分確認）→ apply（適用）のワークフロー。CloudFormation は AWS 限定だが、Terraform はクラウド横断的な統一管理が可能。"
         },
         {
           "scenario": "🔍 CloudFormation のドリフト検出とは？",
@@ -255,7 +255,7 @@
             "バックアップ頻度"
           ],
           "correct": 0,
-          "explanation": "RTO は「どのくらいの時間内に復旧すべきか」の目標値。RPO（Recovery Point Objective）は「どのくらい前のデータまで失って許容できるか」のデータ損失許容量。両方が DR 設計の基本指標。"
+          "explanation": "RTO は「障害から復旧完了までの最大許容時間」（例：4 時間）。RPO（Recovery Point Objective）は「障害時点で失っても許容できるデータの最大損失期間」（例：1 時間分のデータまで）。両者は DR 計画の中核で、RTO が短いほど、RPO が小さいほど高可用性が必要だがコストが増加する。例：RTO=1 時間、RPO=15 分。"
         },
         {
           "scenario": "🌍 マルチAZ構成の主な目的は？",
@@ -277,7 +277,7 @@
             "ランダムに選択"
           ],
           "correct": 0,
-          "explanation": "ヘルスチェックでプライマリの障害を検知すると自動でセカンダリにルーティングを切り替える。リクエスト数分散は加重ルーティング、地理的ルーティングはレイテンシルーティングが別途ある。"
+          "explanation": "Route 53 フェイルオーバールーティング（Failover Routing）はプライマリリソースにヘルスチェック（HTTP/TCP/CloudWatch メトリクス）を設定し、障害を検知すると自動でセカンダリにルーティングを切り替える。複数のセカンダリをランク付けできる。リクエスト数分散は加重ルーティング、地理的ルーティングはジオロケーション/レイテンシールーティングが別途ある。"
         },
         {
           "scenario": "📊 RDS マルチAZ の特徴は？",
@@ -288,7 +288,7 @@
             "別リージョンにスタンバイ"
           ],
           "correct": 0,
-          "explanation": "RDS マルチ AZ はスタンバイに同期レプリケーションし、プライマリ障害時に約1〜2分でスタンバイに自動フェイルオーバー。エンドポイントが変わらないためアプリの設定変更不要。読み取りスケールは Read Replica を使う。"
+          "explanation": "RDS マルチ AZ はプライマリとスタンバイが同一リージョン内の異なる AZ に存在。同期レプリケーション（Write ハード待機）でデータ損失ゼロを保証。プライマリ障害時に自動フェイルオーバー（通常 1〜2 分）し、DNS レコードが自動更新されるためアプリ設定変更不要。読み取りスケールが必要な場合は Read Replica を追加。Multi-region 冗長化は Aurora Global Database が適切。"
         },
         {
           "scenario": "🚀 ターゲット追跡スケーリングとは？",
@@ -310,7 +310,7 @@
             "キャッシュミス時にフォールバック"
           ],
           "correct": 0,
-          "explanation": "オリジングループにプライマリとセカンダリを設定し、プライマリが特定 HTTP ステータス（5xx 等）を返した場合に自動でセカンダリに切り替える。S3 クロスリージョンレプリケーションと組み合わせることが多い。"
+          "explanation": "CloudFront オリジングループにプライマリとセカンダリを設定し、プライマリが 5xx や設定した 4xx を返すか接続タイムアウト時に自動でセカンダリに切り替える。複数ステータスコード指定・リトライ間隔・リトライ回数が設定可能。クライアント側はキャッシュから提供されるため影響が最小。S3 クロスリージョンレプリケーション + CloudFront オリジンフェイルオーバーで高可用な配信構成を実現。"
         },
         {
           "scenario": "💾 S3 のデータ耐久性は？",
@@ -429,7 +429,7 @@
             "アクセスログ管理"
           ],
           "correct": 0,
-          "explanation": "Logs Insights は CloudWatch Logs に保存されたログを SQL 風のクエリ言語で高速検索・集計・可視化するサービス。エラーパターンの集計やレスポンスタイム分布の分析などに使われる。"
+          "explanation": "CloudWatch Logs Insights は CloudWatch Logs に保存されたログを独自のクエリ言語（SQL 風）で高速検索・集計・グラフ化。| fields、| stats、| filter などで複雑な分析が可能。エラーの出現パターン集計、レスポンスタイム P50/P95/P99 算出、特定ユーザーのアクティビティ追跡など。複数ロググループを同時クエリできる。クエリ結果の保存・共有も可能。"
         },
         {
           "scenario": "🛡️ GuardDuty の説明は？",

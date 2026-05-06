@@ -17,7 +17,7 @@
             "S3 静的ウェブサイトホスティングを有効にする。"
           ],
           "correct": 0,
-          "explanation": "クロスアカウントデプロイでは、送信先アカウント(別AWS アカウント)へのアクセス許可が必須。KMS カスタマーマネージドキーを使うことで、暗号化と アクセス制御を厳格に管理できます。パブリックアクセスは絶対NG、AWS マネージド型キーでは送信先アカウントへの権限制御が不十分です。"
+          "explanation": "クロスアカウントデプロイでは、送信先アカウントの CodePipeline ロールに対して S3 バケットへのアクセス許可（s3:GetObject、s3:PutObject）を付与するバケットポリシーが必須。KMS カスタマーマネージドキーを使用し、KMS キーポリシーでも送信先アカウントへのアクセスを明示的に許可する必要がある。AWS マネージド型キーではアカウント間の権限制御ができない。"
         },
         {
           "scenario": "CodeDeploy で Lambda のトラフィックを 10% ずつ 10 分ごとに増やす設定はどれですか？",
@@ -72,7 +72,7 @@
             "ソースプロバイダーを S3 に限定する。"
           ],
           "correct": 0,
-          "explanation": "CodeBuild で Docker レイヤキャッシュを有効にするには、buildspec.yml で cache セクションに docker レイヤを指定し、プロジェクト設定でキャッシュ場所（S3 またはローカル）を選択します。"
+          "explanation": "CodeBuild で Docker イメージレイヤーキャッシュを有効にするには、buildspec.yml で cache セクションに docker レイヤ対象を指定し、プロジェクト設定でキャッシュ場所を選択（LOCAL: ローカルキャッシュで同じビルド環境内、S3: S3 バケットで複数ビルド環境間で共有）。多段階ビルド時に中間レイヤが再利用されるため大幅に高速化できる。"
         },
         {
           "scenario": "Systems Manager パッチマネージャーを使用して、非準拠のインスタンスを特定しつつパッチは当てない操作はどれですか？",
@@ -136,7 +136,7 @@
             "IAM によるアクセス制御"
           ],
           "correct": 0,
-          "explanation": "Secrets Manager には組み込みのシークレットローテーション機能があり、Lambda と連携して定期的に認証情報を自動更新できます。Parameter Store はローテーション機能がない代わり、無料でシンプルです。"
+          "explanation": "Secrets Manager には**組み込みのシークレットローテーション**が特徴。Lambda 関数と連携して RDS パスワードや API キーを定期的に自動更新し、古いシークレットは一時期は並行利用できる（段階的な切り替え）。Parameter Store はローテーション機能がなく、代わりに無料で Standard パラメータ（4KB）が利用可能。安全な保存と IAM 制御は両方でサポート。"
         },
         {
           "scenario": "Amazon Inspector を使用して EC2 インスタンスの脆弱性をスキャンする際、必要なコンポーネントは？",
@@ -191,7 +191,7 @@
             "IAM ユーザーの作成"
           ],
           "correct": 0,
-          "explanation": "Kinesis Firehose で S3 に送信する前にデータを圧縮（GZIP, Snappy 等）およびフォーマット変換（Parquet, ORC）できます。SQL クエリ実行や S3 削除はできません。"
+          "explanation": "Kinesis Firehose は S3 配信設定で圧縮形式（GZIP、SNAPPY、ZIP）とフォーマット（Parquet、ORC、JSON）を指定でき、Athena による S3 Select クエリやビッグデータ分析を効率化できる。Lambda 変換を組み合わせるとさらに細粒度の処理も可能。SQL クエリ実行は Athena 側で行う。"
         },
         {
           "scenario": "マルチアカウント環境で CloudTrail ログを 1 つのアカウントに集約する最適な方法は？",
@@ -277,7 +277,7 @@
             "Inspector + Systems Manager"
           ],
           "correct": 0,
-          "explanation": "GuardDuty 検出 → EventBridge ルール → Lambda/Step Functions での修復が標準パターンです。S3 + Athena はログ分析用途です。"
+          "explanation": "GuardDuty が脅威を検出すると EventBridge（GuardDuty findings イベント）でそれをキャッチ、Lambda で自動修復（セキュリティグループ変更、インスタンス隔離など）、複雑なワークフローなら Step Functions で実装。その結果を SNS 通知や SecurityHub に連携。S3+Athena はログ分析、Config は設定監視が役目。"
         },
         {
           "scenario": "CloudWatch Logs サブスクリプションフィルタでサポートされていない送信先は？",
@@ -288,7 +288,7 @@
             "AWS Lambda"
           ],
           "correct": 0,
-          "explanation": "CloudWatch Logs サブスクリプションフィルタの送信先は Kinesis、Firehose、Lambda、SNS ですが、SNS は**送信先ではなく**、Lambda を経由して通知します。正しくは Kinesis, Firehose, Lambda です。"
+          "explanation": "CloudWatch Logs サブスクリプションフィルタが直接サポートする送信先は Kinesis Data Streams、Kinesis Data Firehose、Lambda、および CloudWatch Logs（クロスアカウント）です。SNS は直接サポートされていません。SNS に通知したい場合は Lambda を経由する必要があります。"
         },
         {
           "scenario": "CodeDeploy で、オンプレミスサーバーにデプロイするために最低限必要な構成は？",
@@ -310,7 +310,7 @@
             "インターネットゲートウェイが不要になる。"
           ],
           "correct": 0,
-          "explanation": "Session Manager は SSH キー不要、ポート 22 開放不要で安全に操作でき、セッションログも記録されます。"
+          "explanation": "Session Manager は SSH キー不要、セキュリティグループのポート 22（SSH）開放不要で安全にシェルアクセスできる。IAM ロールと Systems Manager（Session Manager）ドキュメントで権限制御。全セッションは CloudWatch Logs や S3 に自動記録でき、監査対応も容易。EC2 Instance Connect とは異なり、プライベートサブネットのインスタンスにも接続可能（VPC エンドポイント設定で）。"
         },
         {
           "scenario": "CodePipeline の「手動承認」アクションを実行する際、通知を送るために利用されるサービスは？",
@@ -493,7 +493,7 @@
             "ソースコードを自動生成する。"
           ],
           "correct": 0,
-          "explanation": "Step Functions はワークフローの状態管理、エラーハンドリング、リトライ処理をコードから分離でき、保守性が高まります。"
+          "explanation": "Step Functions（StateMachine）は複数の Lambda/ECS/Glue などのタスクを並列・逐次実行するワークフローを定義。状態管理、エラーハンドリング（Catch）、リトライ・バックオフ処理、待機（Wait）タスクを JSON で宣言的に記述できるため、ビジネスロジックはタスク内に、ワークフロー制御は Step Functions に分離。最大 1 年の長時間実行も可能で、Lambda 15 分制限を超える処理に最適。"
         },
         {
           "scenario": "AWS Resource Groups の役割は？",
@@ -526,7 +526,7 @@
             "ソースコードの静的解析を行う。"
           ],
           "correct": 0,
-          "explanation": "AppConfig で設定値や機能フラグを管理し、再デプロイなしに安全に(段階的に)展開できます。"
+          "explanation": "AppConfig は設定値やフィーチャーフラグを分離管理し、アプリ再デプロイなしに段階的に展開（Deployment Strategy: Linear, Exponential, All-at-once）。バリデーション（JSON Schema）を設定して無効な値を自動拒否、ロールバック（CloudWatch メトリクスやカスタム Lambda）も設定可能。A/B テスト用途にも活用。"
         },
         {
           "scenario": "CloudWatch Logs Insights の機能は？",
@@ -656,7 +656,7 @@
             "EC2 のインスタンスタイプ"
           ],
           "correct": 0,
-          "explanation": "パッチベースラインで、承認パッチの分類(重大度など)と待機期間を設定できます。"
+          "explanation": "パッチベースラインで以下を設定：承認ルール（例：CRITICAL パッチは自動承認、その他は手動）、除外パッチ（例：特定バージョンは除外）、デフォルトパッチ言語（Linux: al2023 など）、承認後の適用待機期間（0〜30 日）。Compliance Scanning でパッチ適用状況も監視できる。"
         },
         {
           "scenario": "CloudWatch アラームで、一定期間データが届かない場合（データ不足）の挙動をどう設定すべきか？",
