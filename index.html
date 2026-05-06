@@ -89,6 +89,8 @@
     .answer-detail .exp { margin-top: 4px; font-size: 0.8rem; color: #718096; border-left: 2px solid #e2e8f0; padding-left: 8px; }
     .btn-home { margin-top: 24px; width: 100%; padding: 15px; background: linear-gradient(135deg, #f7971e, #ffd200); color: #2d3748; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: inherit; }
     .btn-home:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(247,151,30,0.4); }
+    .btn-review { margin-top: 16px; width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .btn-review:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102,126,234,0.4); }
     .confetti-wrap { position: fixed; top: 0; left: 0; right: 0; pointer-events: none; overflow: hidden; height: 100vh; z-index: 9999; }
     .confetti-piece { position: absolute; width: 10px; height: 10px; border-radius: 2px; animation: confettiFall linear forwards; }
     @keyframes confettiFall { 0% { transform: translateY(-20px) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
@@ -157,6 +159,7 @@
       <h3>📋 解答一覧</h3>
       <div id="answer-list"></div>
     </div>
+    <button id="review-btn" class="btn-review" onclick="startReview()" style="display:none"></button>
     <button class="btn-home" onclick="showHome()">🏠 テスト選択に戻る</button>
   </div>
 </div>
@@ -272,6 +275,7 @@ function getTotalCorrect() {
 }
 
 function showHome() {
+  isReviewMode = false;
   document.getElementById('screen-home').classList.remove('hidden');
   document.getElementById('screen-quiz').classList.add('hidden');
   document.getElementById('screen-results').classList.add('hidden');
@@ -301,7 +305,7 @@ function showHome() {
             (navigator.maxTouchPoints > 0) ||
             (navigator.msMaxTouchPoints > 0));
   };
-  const buildTime = '2026-05-06 11:35:03';
+  const buildTime = '2026-05-06 11:52:00';
   const debugEl = document.createElement('div');
   debugEl.style.cssText = 'position:fixed;bottom:8px;left:8px;font-size:0.65rem;color:#999;background:rgba(0,0,0,0.1);padding:4px 8px;border-radius:4px;z-index:1000;line-height:1.3;';
   debugEl.innerHTML = (isTouchDevice() ? '📱 Touch' : '🖥️ PC') + '<br>' + buildTime;
@@ -369,6 +373,7 @@ function renderQuestion() {
 }
 
 let answerInProgress = false;
+let isReviewMode = false;
 
 function answer(idx, correctIdx) {
   if (answerInProgress) return; // 複数実行防止
@@ -426,22 +431,37 @@ function showResults() {
   const total   = currentTest.questions.length;
   const correct = answers.filter(a => a.correct).length;
   const score   = Math.round((correct / total) * 100);
-  setBest(currentTest.id, score);
-  const best  = getBest(currentTest.id);
+
+  if (!isReviewMode) {
+    setBest(currentTest.id, score);
+    const best = getBest(currentTest.id);
+    document.getElementById('best-msg').textContent = `🏅 最高: ${best}点`;
+    document.getElementById('best-msg').style.display = '';
+  } else {
+    document.getElementById('best-msg').style.display = 'none';
+  }
 
   document.getElementById('screen-quiz').classList.add('hidden');
   document.getElementById('screen-results').classList.remove('hidden');
-  document.getElementById('result-title').textContent = currentTest.title + ' 結果 🎉';
+  document.getElementById('result-title').textContent = isReviewMode ? currentTest.title + ' 復習結果' : currentTest.title + ' 結果 🎉';
   document.getElementById('score-num').textContent    = score;
 
   const stars = score === 100 ? '⭐⭐⭐' : score >= 70 ? '⭐⭐' : score >= 40 ? '⭐' : '　';
   document.getElementById('score-stars').textContent = stars;
   document.getElementById('score-msg').textContent = score === 100 ? '🏆 満点！' : score >= 80 ? '🌟 すごい！' : score >= 60 ? '💪 惜しい！' : score >= 40 ? '📚 復習しよう' : '😅 もう一度';
-  document.getElementById('best-msg').textContent = `🏅 最高: ${best}点`;
 
   if (score === 100) { soundFanfare(); setTimeout(() => launchConfetti(80), 300); }
   else if (score >= 70) { soundGood(); setTimeout(() => launchConfetti(30), 300); }
   else soundClick();
+
+  const wrongCount = answers.filter(a => !a.correct).length;
+  const reviewBtn = document.getElementById('review-btn');
+  if (!isReviewMode && wrongCount > 0) {
+    reviewBtn.textContent = `🔁 間違えた ${wrongCount} 問を復習する`;
+    reviewBtn.style.display = '';
+  } else {
+    reviewBtn.style.display = 'none';
+  }
 
   document.getElementById('answer-list').innerHTML = currentTest.questions.map((q, i) => {
     const ans = answers[i];
@@ -452,6 +472,17 @@ function showResults() {
     if (q.explanation) detail += `<div class="exp">💡 ${q.explanation}</div>`;
     return `<div class="answer-row"><span class="q-num">Q${i + 1}</span><span class="mark">${ans.correct ? '✅' : '❌'}</span><div class="answer-detail">${detail}</div></div>`;
   }).join('');
+}
+
+function startReview() {
+  const wrongQuestions = currentTest.questions.filter((_, i) => !answers[i].correct);
+  currentTest = { ...currentTest, questions: wrongQuestions };
+  isReviewMode = true;
+  currentQ = 0;
+  answers = [];
+  document.getElementById('screen-results').classList.add('hidden');
+  document.getElementById('screen-quiz').classList.remove('hidden');
+  renderQuestion();
 }
 
 loadQuestions(1);
