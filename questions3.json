@@ -17,7 +17,7 @@
             "CloudTrail のイベントを監視し、エラー率が上昇したらスタックを削除する。"
           ],
           "correct": 0,
-          "explanation": "CodeDeploy のアラーム監視機能で CloudWatch アラームを監視し、異常時に自動ロールバックをトリガーできます。Lambda ポーリングより管理が簡潔で、Route 53 DNS 切り替えは別戦略です。"
+          "explanation": "CodeDeploy のアラーム監視機能で特定の CloudWatch アラームを設定しておき、異常検知時に自動でロールバックをトリガーできます。Lambda ポーリングより簡潔で、Route 53 DNS 切り替えより管理の手間が少ないリアルタイム対応。"
         },
         {
           "scenario": "CloudFormation StackSets を使用して 100 近くのアカウントにデプロイする際、一部のアカウントで失敗しても全体を止めずに進めたい。調整すべきパラメータは？",
@@ -28,7 +28,7 @@
             "RegionConcurrencyType"
           ],
           "correct": 0,
-          "explanation": "StackSets で FailureToleranceCount または FailureTolerancePercentage を設定すれば、一部失敗時も全体は進みます。MaxConcurrentCount は並列度、RetainStacksOnAccountRemoval はアカウント削除時の動作です。"
+          "explanation": "CloudFormation StackSets で FailureToleranceCount（失敗許容アカウント数）または FailureTolerancePercentage（失敗許容率）を設定すれば、一部アカウント失敗時も他のアカウントへのデプロイを継続。"
         },
         {
           "scenario": "AWS Organizations 内のすべてのアカウントで、パブリック S3 バケットの作成を「遡及的に」検出し、自動で非公開にする構成は？",
@@ -39,7 +39,7 @@
             "S3 バケットポリシーで一律拒否する。"
           ],
           "correct": 0,
-          "explanation": "AWS Config の組織ルール + SSM Automation 修復で、遡及的にパブリック S3 を検出し自動非公開化できます。SCP は予防的、Lambda は遅延の可能性があります。"
+          "explanation": "AWS Config 組織ルールで遡及的にパブリック S3 バケットを検出でき、SSM Automation による修復アクションで自動非公開化。SCP は予防的で遡及的ではなく、Lambda ポーリングは遅延リスク。"
         },
         {
           "scenario": "CodePipeline で、ソースコードの変更が反映される前に、外部の脆弱性スキャンツール（API 経由）を完了させたい。最適なアクションタイプは？",
@@ -50,7 +50,7 @@
             "S3 のイベント通知を利用する。"
           ],
           "correct": 0,
-          "explanation": "CodePipeline で外部 API スキャンを完了させるには、カスタムアクション または Lambda アクションで API 呼び出し・結果待機ができます。承認アクションは手動確認向けです。"
+          "explanation": "CodePipeline で外部脆弱性スキャン API を組み込むには、カスタムアクションまたは Lambda アクションで API 呼び出し結果を待機し、成功/失敗を判定して次ステージへ進む。"
         },
         {
           "scenario": "Systems Manager パッチマネージャーで、特定の「Webサーバー群」にだけ異なるスケジュールでパッチを当てたい。どう識別すべきか？",
@@ -61,7 +61,7 @@
             "IAM ロール名でフィルタリングする。"
           ],
           "correct": 0,
-          "explanation": "Systems Manager パッチグループを使い、リソースタグで Webサーバー群を識別し、異なるスケジュール適用ができます。"
+          "explanation": "Systems Manager パッチマネージャーで Role=WebServer というタグを EC2 に付与し、パッチグループとして定義すれば、このグループだけ異なるパッチスケジュール適用が可能。"
         },
         {
           "scenario": "Amazon EventBridge で、複数アカウントのイベントを中央のセキュリティアカウントに集約したい。送信側アカウントで必要な設定は？",
@@ -72,7 +72,7 @@
             "SNS トピックを中央アカウントと共有する。"
           ],
           "correct": 0,
-          "explanation": "EventBridge ではクロスアカウント連携が可能です。送信側アカウントで EventBridge ルールを作成し、ターゲットとして別アカウントの EventBus を指定します。その際、リソースベースポリシーで権限を許可する必要があります。"
+          "explanation": "EventBridge クロスアカウント連携では、送信側で中央アカウントの EventBus ARN をターゲット指定し、リソースベースポリシーで権限許可。中央側でルールを集約管理。"
         },
         {
           "scenario": "CloudFormation で、DB スタックの出力値（Endpoint等）を、他のアプリ用スタックで動的に参照したい。最も標準的な方法は？",
@@ -105,7 +105,7 @@
             "IAM ポリシーでの制限のみ"
           ],
           "correct": 0,
-          "explanation": "CloudWatch Alarms が SNS・Lambda に連携すれば、監視条件で自動アクション（自己修復など）が実行できます。"
+          "explanation": "GuardDuty の EC2 異常通信警告を自動隔離するには、GuardDuty イベント → EventBridge ルール → Lambda で SecurityGroup を変更し、該当 EC2 のアウトバウンドを遮断。"
         },
         {
           "scenario": "Amazon Inspector が、特定の EC2 インスタンスでスキャンを実行できていない。まず確認すべき項目は？",
@@ -116,7 +116,7 @@
             "VPC エンドポイントが作成されているか。"
           ],
           "correct": 0,
-          "explanation": "Inspector はリモートスキャンのため、Systems Manager (SSM) エージェント経由で脆弱性情報を収集します。SSM エージェントが起動していない、または IAM ロールの権限不足が主な原因です。"
+          "explanation": "Inspector がスキャン実行できない原因は、SSM エージェント未起動または IAM ロール権限不足。両者なく SSM エージェントがインスタンスと通信できず、脆弱性データを収集できません。"
         }
       ]
     },
@@ -169,7 +169,7 @@
             "AWS-CopySnapshot"
           ],
           "correct": 0,
-          "explanation": "State Manager で 継続的に「あるべき姿」を維持するには、AWS-RunPatchBaseline や AWS-ApplyAutomationRecipe などの Documents (ドキュメント) を使用します。"
+          "explanation": "State Manager で『あるべき姿』を継続維持するには、AWS-RunPatchBaseline（パッチ適用）や AWS-ApplyAutomationRecipe（自動化レシピ）などの Automation Document を使用。"
         },
         {
           "scenario": "Auto Scaling グループで、スケールイン時に特定の「計算処理中のインスタンス」が削除されるのを防ぐための設定は？",
@@ -180,7 +180,7 @@
             "ライフサイクルフックで 1 時間待機させる。"
           ],
           "correct": 0,
-          "explanation": "スケールイン保護を有効にすると、Auto Scaling グループのスケールイン時にそのインスタンスが削除対象から外れます。処理中のジョブを安全に完了させることができます。"
+          "explanation": "Auto Scaling グループでインスタンスのスケールイン保護を有効にすると、スケールイン対象からそのインスタンスが除外され、計算処理完了まで継続稼働。"
         },
         {
           "scenario": "CloudWatch Logs Insights で、ステータスコードが 500 系のログだけを抽出して集計するクエリのキーワードは？",
@@ -515,7 +515,7 @@
             "Route 53 を切り替える。"
           ],
           "correct": 0,
-          "explanation": "AppConfig はデプロイ中にエラーが検出された場合、自動ロールバック機能で前の設定に戻せます。ガード レール機能で設定の正合性チェック、本番適用前の検証が可能です。"
+          "explanation": "AWS AppConfig のデプロイ中にエラー検知時、CloudWatch アラーム設定で自動ロールバック可能。ガードレール機能で設定正合性チェックし、本番適用前に検証。"
         },
         {
           "scenario": "CloudFormation の `Condition` セクションを使用して、「本番環境の時だけ RDS を作成する」ロジックを実装したい。必要な関数は？",
@@ -570,7 +570,7 @@
             "MaintenanceWindow"
           ],
           "correct": 0,
-          "explanation": "Systems Manager パッチマネージャーではタグキー『Patch Group』を使ってパッチグループを識別します。タグ値がパッチグループ名になり、異なるスケジュール設定ができます。"
+          "explanation": "Systems Manager パッチグループはタグキー『Patch Group』（大文字・スペース重要）の値で識別。タグ値が『WebServers』なら、Patch Group『WebServers』として複数スケジュール設定可能。"
         },
         {
           "scenario": "AWS CloudMap と Amazon ECS を連携させた「サービス検出」で、コンテナの IP アドレスが変更された際に自動更新される DNS レコードの種類は？",
@@ -634,7 +634,7 @@
             "VPC エンドポイントがない。"
           ],
           "correct": 0,
-          "explanation": "CloudWatch Logs のエクスポートタスクで S3 にログを送る際、S3 バケットポリシーで logs.amazonaws.com に PutObject 権限を許可する必要があります。これが設定されていないとログが表示されません。"
+          "explanation": "CloudWatch Logs エクスポートで S3 にログ送信時、S3 バケットポリシーで logs.amazonaws.com に PutObject 権限を許可しないと、ログが表示されず。"
         },
         {
           "scenario": "AWS Systems Manager の「高速セットアップ (Quick Setup)」で自動化できる運用タスクは？",
@@ -645,7 +645,7 @@
             "S3 の静的サイト公開"
           ],
           "correct": 0,
-          "explanation": "Systems Manager の Quick Setup は、パッチ適用スキャン、インベントリ収集、CloudWatch エージェントの設定・更新など、代表的な運用タスクをウィザード形式で素早く自動化できます。"
+          "explanation": "Systems Manager Quick Setup はウィザード形式で、パッチスキャン、インベントリ自動収集、CloudWatch エージェント設定更新など代表的運用タスクを素早く一括自動化。"
         },
         {
           "scenario": "Amazon EventBridge の「デッドレターキュー (DLQ)」の役割は？",
