@@ -306,7 +306,7 @@ function showHome() {
             (navigator.maxTouchPoints > 0) ||
             (navigator.msMaxTouchPoints > 0));
   };
-  const buildTime = '2026-05-06 12:15:30';
+  const buildTime = '2026-05-06 12:22:00';
   const debugEl = document.createElement('div');
   debugEl.style.cssText = 'position:fixed;bottom:8px;left:8px;font-size:0.65rem;color:#999;background:rgba(0,0,0,0.1);padding:4px 8px;border-radius:4px;z-index:1000;line-height:1.3;';
   debugEl.innerHTML = (isTouchDevice() ? '📱 Touch' : '🖥️ PC') + '<br>' + buildTime;
@@ -448,12 +448,13 @@ function showResults() {
   document.getElementById('result-title').textContent = isReviewMode ? currentTest.title + ' 復習結果' : currentTest.title + ' 結果 🎉';
   document.getElementById('score-num').innerHTML    = `<span class="score-main">${score}</span><span class="score-sub"> / ${maxScore}点</span>`;
 
-  const stars = score === 100 ? '⭐⭐⭐' : score >= 70 ? '⭐⭐' : score >= 40 ? '⭐' : '　';
+  const ratio = score / maxScore;
+  const stars = ratio === 1 ? '⭐⭐⭐' : ratio >= 0.7 ? '⭐⭐' : ratio >= 0.4 ? '⭐' : '　';
   document.getElementById('score-stars').textContent = stars;
-  document.getElementById('score-msg').textContent = score === 100 ? '🏆 満点！' : score >= 80 ? '🌟 すごい！' : score >= 60 ? '💪 惜しい！' : score >= 40 ? '📚 復習しよう' : '😅 もう一度';
+  document.getElementById('score-msg').textContent = ratio === 1 ? '🏆 満点！' : ratio >= 0.8 ? '🌟 すごい！' : ratio >= 0.6 ? '💪 惜しい！' : ratio >= 0.4 ? '📚 復習しよう' : '😅 もう一度';
 
-  if (score === 100) { soundFanfare(); setTimeout(() => launchConfetti(80), 300); }
-  else if (score >= 70) { soundGood(); setTimeout(() => launchConfetti(30), 300); }
+  if (ratio === 1) { soundFanfare(); setTimeout(() => launchConfetti(80), 300); }
+  else if (ratio >= 0.7) { soundGood(); setTimeout(() => launchConfetti(30), 300); }
   else soundClick();
 
   const wrongCount = answers.filter(a => !a.correct).length;
