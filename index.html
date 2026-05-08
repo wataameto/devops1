@@ -306,7 +306,7 @@ function showHome() {
             (navigator.maxTouchPoints > 0) ||
             (navigator.msMaxTouchPoints > 0));
   };
-  const buildTime = '2026-05-06 12:22:00';
+  const buildTime = '2026-05-06 12:30:00';
   const debugEl = document.createElement('div');
   debugEl.style.cssText = 'position:fixed;bottom:8px;left:8px;font-size:0.65rem;color:#999;background:rgba(0,0,0,0.1);padding:4px 8px;border-radius:4px;z-index:1000;line-height:1.3;';
   debugEl.innerHTML = (isTouchDevice() ? '📱 Touch' : '🖥️ PC') + '<br>' + buildTime;
@@ -490,6 +490,30 @@ function startReview() {
 }
 
 loadQuestions(1);
+
+// キーボードショートカット
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('screen-quiz').classList.contains('hidden')) return;
+  const key = e.key.toLowerCase();
+
+  if (!answerInProgress) {
+    // 回答前: a/b/c/d で選択
+    const map = { 'a': 0, 'b': 1, 'c': 2, 'd': 3 };
+    if (key in map) {
+      const btn = document.getElementById(`choice-${map[key]}`);
+      if (btn && !btn.disabled) btn.click();
+    }
+  } else if (key === 'enter') {
+    // 回答後: Enter で次へ（0.5秒ガード中は disabled なので自然に弾かれる）
+    for (let i = 0; i < 4; i++) {
+      const btn = document.getElementById(`choice-${i}`);
+      if (btn && !btn.disabled && (btn.classList.contains('correct') || btn.classList.contains('reveal'))) {
+        btn.click();
+        break;
+      }
+    }
+  }
+});
 </script>
 </body>
 </html>
